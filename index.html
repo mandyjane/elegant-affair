@@ -29699,6 +29699,32 @@ function _wbStripToggle(){
   if(_wbStripOpen) _wbLivePaint();
 }
 
+// Both preview frames get a REAL document url (blob:) rather than `srcdoc`.
+//
+// A srcdoc document's own url is `about:srcdoc`, but it inherits its BASE url from the
+// parent page. So the guest site's own nav — `<a href="#faq">` — resolved against the
+// APP's url, making it a link to a different document rather than to a section of itself.
+// Clicking a page in the preview navigated the frame to the planner, and the guest site
+// was replaced by the app's own sidebar (v168). Nothing about the site was wrong; the
+// frame simply had no url of its own to resolve against.
+//
+// A blob url is a genuine document url, so `#faq` resolves to the site and scrolls to the
+// section — the same behaviour a guest will get. It is same-origin (blob urls inherit the
+// creating document's origin), so `contentDocument`, `contentWindow` and `onload` all
+// remain reachable and the scroll-restore below is unaffected.
+const _wbBlobUrls = { live:null, pv:null };
+function _wbFrameLoad(f, slot, html){
+  if(!f) return;
+  const old = _wbBlobUrls[slot];
+  _wbBlobUrls[slot] = URL.createObjectURL(new Blob([html], {type:'text/html'}));
+  f.src = _wbBlobUrls[slot];
+  // Revoke the PREVIOUS url, never the one just assigned — the frame may not have fetched
+  // it yet. A document that has already loaded survives its url being revoked, so this is
+  // safe for the outgoing frame. At most one live url per surface is ever outstanding;
+  // they replace rather than accumulate.
+  if(old) setTimeout(function(){ URL.revokeObjectURL(old); }, 0);
+}
+
 function _wbLiveScrollY(f){
   // Same-origin srcdoc, so the document is reachable. It is NOT reachable before first
   // load, and it is not reachable if the sandbox ever loses allow-same-origin — hence
@@ -29735,7 +29761,7 @@ function _wbLivePaint(){
       setTimeout(land, 220);
     }catch(e){}
   };
-  f.srcdoc=_wbBuildSite();
+  _wbFrameLoad(f, 'live', _wbBuildSite());
 }
 
 // Called when a section editor opens/closes. Paint is left to the caller — this only
@@ -31727,9 +31753,9 @@ function _wbInspoAdd(){
 }
 
 // ── Preview ──
-// The guest site is rendered into an <iframe srcdoc> so its CSS cannot leak into the
-// app (and the app's cannot leak into it). Phone/Desktop just resizes the frame — the
-// site inside is genuinely responsive, not a separate mock.
+// The guest site is rendered into an <iframe> (as a blob: document — see _wbFrameLoad)
+// so its CSS cannot leak into the app, and the app's cannot leak into it. Phone/Desktop
+// just resizes the frame — the site inside is genuinely responsive, not a separate mock.
 let _wbPreviewMode = 'phone';
 function openWbPreview(){
   // The Phone/Desktop switcher lives in the SHELL, directly above the frame it resizes —
@@ -31793,7 +31819,7 @@ function _wbPreviewPaint(){
       </div>
     </div>`;
   const f=document.getElementById('wb-pv-frame');
-  if(f) f.srcdoc=_wbBuildSite();
+  if(f) _wbFrameLoad(f, 'pv', _wbBuildSite());
   const pb=document.getElementById('wb-pv-phone'), db=document.getElementById('wb-pv-desk');
   if(pb) pb.classList.toggle('active', phone);
   if(db) db.classList.toggle('active', !phone);

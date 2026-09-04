@@ -18,7 +18,7 @@
  * every cache that isn't the current one, so the next launch refetches from the network.
  */
 
-const CACHE_VERSION = 'ea-v167';
+const CACHE_VERSION = 'ea-v168';
 const SHELL = [
   './',
   './index.html',
@@ -55,6 +55,9 @@ self.addEventListener('fetch', event => {
   // a data-correctness bug, not a performance win.
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  // Only http(s). A blob: url parses with this same origin, and the website preview frames
+  // are blob documents — the worker must not attempt to cache or serve those.
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
   if (url.origin !== self.location.origin) return;
 
   event.respondWith((async () => {
