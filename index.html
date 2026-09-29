@@ -1647,6 +1647,37 @@ body.dark .modal-warn-ico{background:rgba(224,128,128,.16);color:#E08080}
 .decor-zone{position:absolute;inset:0;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:2px 4px;overflow:hidden;border:2px dashed var(--gold-deep);color:var(--gold-deep);background:repeating-linear-gradient(45deg,rgba(201,161,74,.10),rgba(201,161,74,.10) 6px,transparent 6px,transparent 12px)}
 body.dark .decor-zone{border-color:#B0A085;color:#D8C9A8;background:repeating-linear-gradient(45deg,rgba(176,160,133,.15),rgba(176,160,133,.15) 6px,transparent 6px,transparent 12px)}
 .decor-zone .decor-lbl{font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;line-height:1.15}
+/* ── Floorplan text labels (v170) ──
+   A text label is NOT a zone: no dashed border, no hatch fill, no padding box. It is just
+   words on the plan, so it deliberately does not reuse .decor-zone. Font size scales with
+   the item's height so dragging the resize grip makes the text bigger, which is the only
+   sizing control that makes sense for a label. */
+.ftxt-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;overflow:visible}
+.ftxt{white-space:pre-wrap;line-height:1.15;color:var(--ink)}
+.ftxt-caps{font-family:'Inter',sans-serif;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep)}
+.ftxt-heading{font-family:'Cormorant Garamond',serif;font-weight:600;color:var(--ink)}
+.ftxt-note{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--muted)}
+.ftxt-boxed{font-family:'Inter',sans-serif;background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:4px 9px;color:var(--ink)}
+body.dark .ftxt-caps{color:var(--gold)}
+/* Doorways draw as line work, not as a filled area — they mark a point on a wall. */
+.fdoor{position:absolute;inset:0;overflow:visible}
+.fdoor svg{width:100%;height:100%;display:block;overflow:visible}
+/* ── Black & white floorplan PNG (v171) ──
+   These live in the real stylesheet, NOT in the _SEATING_PRINT_CSS string, and that is
+   deliberate. That string is only injected into the DOM while the print-preview modal is
+   open, so its `.sp-doc.bw` rules simply are not present when the PNG is exported from the
+   floorplan toolbar — the export would have silently ignored the B&W setting. The PNG
+   pipeline collects every <style> in the document, so rules it depends on have to be real.
+
+   Line art, not a desaturated screenshot: white ground, no dot grid, chairs as outlines.
+   The grid and the tinted canvas are editing aids, not part of the venue, and solid filled
+   chairs print muddy on a home printer for no extra information. */
+.pngbw{--gold:#8a8a8a;--gold-deep:#6f6f6f;--green:#6f6f6f;--red:#6f6f6f;--muted:#767676;
+       --border:#9a9a9a;--surface:#fff;--cream:#fff;--ink:#222;--parchment:#f4f4f4;--connector:#bbb}
+.pngbw #floor-canvas,.pngbw .floor-canvas{background:#fff!important;background-image:none!important;border-color:#bbb!important}
+.pngbw [data-pipon="1"]{background:transparent!important;border:1.5px solid #6f6f6f!important}
+.pngbw .sp-pip-init{color:#4a4a4a!important}
+.pngbw .decor-zone,.pngbw .floor-name-tag{filter:grayscale(1)}
 .floor-resize{position:absolute;right:-6px;bottom:-6px;width:15px;height:15px;border-radius:4px;background:var(--panel,var(--cream));border:1px solid var(--border);color:var(--muted);cursor:nwse-resize;opacity:0;transition:opacity .15s;display:flex;align-items:center;justify-content:center;touch-action:none;z-index:3}
 .floor-table:hover .floor-resize,.floor-decor:hover .floor-resize{opacity:1}
 .seat-seg{display:inline-flex;border:.5px solid #E3D7C4;border-radius:9px;overflow:hidden;background:#FBF8F3}
@@ -25759,6 +25790,10 @@ function _highlightChipInPool(gid){
 // ── Printable seating plan: floorplan map + table-by-table guest list.
 let _seatingBW=false; // when true, the preview/print/download render in black & white (outline pips)
 let _seatingPages=1;  // 1 = plan + list on one page (portrait); 2 = landscape floorplan page, then list page
+// Seat counts ("8/8", "7/10") are working numbers — useful while arranging, noise on a plan
+// handed to a venue or printed for the day. Preview/print/download only; the on-screen
+// editor always shows them, because that is where they are actually needed.
+let _seatingCounts=true;
 function _seatingPrintHtml(forPreview){
   const ev=STATE.event||{};
   const p1=_escHtml(ev.partner1||'Partner'), p2=_escHtml(ev.partner2||'Partner');
@@ -25912,7 +25947,7 @@ function _seatingPrintHtml(forPreview){
     }).join('');
     const empty=ids.length?'':'<li class="sp-empty">— empty —</li>';
     return `<div class="sp-tcard">
-      <div class="sp-tname">${_escHtml(t.name||'Table')}<span class="sp-cnt">${ids.length}/${t.seats} · ${_shp[t.shape]||'Round'}</span></div>
+      <div class="sp-tname">${_escHtml(t.name||'Table')}<span class="sp-cnt">${_seatingCounts?`${ids.length}/${t.seats} · `:''}${_shp[t.shape]||'Round'}</span></div>
       <ol>${rows}${empty}</ol>
     </div>`;
   }).join('');
@@ -26055,12 +26090,23 @@ function openSeatingPrintPreview(){
           <button class="${_nmPrev==='last'?'active':''}" onclick="_setSeatingPreviewNameMode('last')" title="Full names">Last</button>
         </span>
       </span>
+      <span style="display:inline-flex;align-items:center;gap:7px">
+        <span style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-deep)">Counts</span>
+        <span class="sp-counts-seg inv-seg" style="display:inline-flex">
+          <button class="${_seatingCounts?'active':''}" onclick="_setSeatingCounts(true)" title="Show how many seats are filled on each table">Show</button>
+          <button class="${!_seatingCounts?'active':''}" onclick="_setSeatingCounts(false)" title="Hide the seat counts on the floorplan and the guest list">Hide</button>
+        </span>
+      </span>
     </span>
     <span class="sp-foot-actions" style="display:inline-flex;gap:10px;align-items:center">
     <button class="btn btn-outline" onclick="closeModalDirect()">Close</button>
     <button class="btn btn-outline" onclick="_downloadSeatingPlan()" style="display:inline-flex;align-items:center;gap:6px" title="Download a print-ready copy">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Download
+    </button>
+    <button class="btn btn-outline" onclick="_downloadFloorplanPng()" style="display:inline-flex;align-items:center;gap:6px" title="Save the floorplan on its own as a PNG image (no guest list)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      PNG
     </button>
     <button class="btn btn-outline" onclick="_downloadSeatingCsv()" style="display:inline-flex;align-items:center;gap:6px" title="Download guest names + table numbers as a CSV spreadsheet">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
@@ -26082,6 +26128,12 @@ function openSeatingPrintPreview(){
 }
 // Toggle the preview/print/download between full colour and black & white, then
 // re-render the open preview in place (footer toggle reflects the new state).
+function _setSeatingCounts(on){
+  _seatingCounts=!!on;
+  if(document.getElementById('modal-overlay') && !document.getElementById('modal-overlay').classList.contains('hidden')){
+    openSeatingPrintPreview();
+  }
+}
 function _setSeatingBW(on){
   _seatingBW=!!on;
   if(document.getElementById('modal-overlay') && !document.getElementById('modal-overlay').classList.contains('hidden')){
@@ -26174,6 +26226,87 @@ function _downloadSeatingPlan(){
   a.href=url; a.download=`seating-plan-${slug}-${dstr}.html`;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url), 1500);
+}
+
+// ── Floorplan → PNG ──────────────────────────────────────────────────────────
+// The floorplan on its own, as a real image, with no guest list. Done with browser-native
+// APIs only — the app is offline-first and must not pull a rasterising library over the
+// network (v161's rule). The route is: clone the live floorplan, inline the app's CSS and
+// the EMBEDDED font faces, wrap it in <foreignObject>, load that SVG as an image and paint
+// it to a canvas.
+//
+// Three things this had to get right, each found by testing rather than guessing:
+//  1. The <style> body must be wrapped in CDATA. The SVG is parsed as XML and the app's CSS
+//     contains characters XML treats as markup, so without it the image silently fails to
+//     load and you get nothing.
+//  2. The SVG must be a data: URL, NOT a blob: URL. A blob-URL SVG taints the canvas in
+//     Chromium and toDataURL then throws a security error.
+//  3. Editing chrome has to be stripped from the clone. Rotate handles, delete crosses and
+//     resize grips are tools for arranging; baked into an image sent to a venue they read
+//     as part of the plan.
+function _floorPngStrip(root){
+  root.querySelectorAll('.floor-rotate, .decor-x, .decor-edit, .floor-resize').forEach(n=>n.remove());
+  // The stalk under each rotate handle is an unclassed span; it is the only 1px-wide
+  // absolutely positioned element in the tree, so match it by its inline style.
+  root.querySelectorAll('span[style*="width:1px"]').forEach(n=>n.remove());
+  return root;
+}
+async function _floorplanPngDataUrl(scale){
+  const src=document.getElementById('floor-canvas');
+  if(!src) return null;
+  const W=Math.max(1,Math.ceil(src.scrollWidth||src.getBoundingClientRect().width));
+  const H=Math.max(1,Math.ceil(src.scrollHeight||src.getBoundingClientRect().height));
+  const clone=_floorPngStrip(src.cloneNode(true));
+  // The live canvas may be zoomed/panned by the viewport; the export wants the plan at 1:1.
+  clone.style.transform='none'; clone.style.width=W+'px'; clone.style.height=H+'px';
+  let css='';
+  document.querySelectorAll('style').forEach(st=>{ css+=st.textContent+'\n'; });
+  // ALWAYS export in the light palette, whatever theme the app is in. Two reasons. The
+  // practical one: this image gets printed or sent to a venue, and a dark plan is wrong for
+  // both. The mechanical one: `body.dark` cannot apply inside the SVG, because the wrapper
+  // there is a <div>, not the <body> — an early version carried the dark flag through and
+  // produced a light-coloured plan sitting on a dark background, the worst of both. Letting
+  // the clone resolve against :root gives a correct light plan by construction.
+  const ser=new XMLSerializer().serializeToString(clone);
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'">'
+    +'<style>/*<![CDATA[*/'+css+'/*]]>*/</style>'
+    +'<foreignObject width="100%" height="100%">'
+    +'<div xmlns="http://www.w3.org/1999/xhtml" class="'+(_seatingBW?'pngbw':'')+'" style="width:'+W+'px;height:'+H+'px">'+ser+'</div>'
+    +'</foreignObject></svg>';
+  const url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+  const img=new Image();
+  const ok=await new Promise(res=>{ img.onload=()=>res(true); img.onerror=()=>res(false); img.src=url; });
+  if(!ok) return null;
+  const sc=scale||2;
+  const c=document.createElement('canvas'); c.width=Math.round(W*sc); c.height=Math.round(H*sc);
+  const ctx=c.getContext('2d'); ctx.scale(sc,sc);
+  // Always paint an opaque background. A transparent PNG dropped into a document or a dark
+  // chat thread renders the plan's own ink on whatever is behind it, usually unreadably.
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0,0,W,H);
+  ctx.drawImage(img,0,0,W,H);
+  try{ return c.toDataURL('image/png'); }catch(e){ return null; }
+}
+async function _downloadFloorplanPng(){
+  if(!(STATE.tables||[]).length && !((STATE.settings.floorDecor||[]).length)){
+    _showInfoToast('Nothing on the floorplan yet.', null, null); return;
+  }
+  _showInfoToast('Building image…', null, null);
+  let data=null;
+  try{ data=await _floorplanPngDataUrl(2); }catch(e){ data=null; }
+  if(!data){
+    // Safari on iOS has long-standing trouble rendering foreignObject to a canvas. Say so
+    // plainly and point at the route that does work there, rather than saving a blank file.
+    _showInfoToast('Could not build the image on this browser. Try Print Plan → Save as PDF, or export from a desktop browser.', null, null);
+    return;
+  }
+  const ev=STATE.event||{};
+  const slugBase=[ev.partner1,ev.partner2].filter(Boolean).join(' & ')||'floorplan';
+  const slug=slugBase.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'floorplan';
+  const dstr=new Date().toISOString().slice(0,10);
+  const a=document.createElement('a');
+  a.href=data; a.download='floorplan-'+slug+'-'+dstr+(_seatingBW?'-bw':'')+'.png';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 
 // ── Seating → CSV (First name, Last name, Table) ─────────────────────────────
@@ -26654,7 +26787,11 @@ const DECOR_ICONS={
   gift:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8"/><rect x="2" y="7" width="20" height="5" rx="1"/><line x1="12" y1="7" x2="12" y2="21"/><path d="M12 7C12 7 12 2 9 2a2 2 0 0 0 0 4z"/><path d="M12 7C12 7 12 2 15 2a2 2 0 0 1 0 4z"/></svg>',
   photo:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6l1.5-2h5L16 6"/></svg>',
   buffet:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18"/><path d="M5 11V8a7 7 0 0 1 14 0v3"/><path d="M4 11l1 9h14l1-9"/></svg>',
-  restroom:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="4.5" r="1.8"/><path d="M7 7v0a2.2 2.2 0 0 1 2.2 2.2v4.3H8v6.5H6V13.5H4.8V9.2A2.2 2.2 0 0 1 7 7z"/><line x1="12" y1="3" x2="12" y2="21"/><circle cx="17" cy="4.5" r="1.8"/><path d="M17 7a2.2 2.2 0 0 1 2.1 1.5L20.6 13h-1.4l-1 7.5h-2.4L14.8 13h-1.4l1.5-4.5A2.2 2.2 0 0 1 17 7z"/></svg>'
+  restroom:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="4.5" r="1.8"/><path d="M7 7v0a2.2 2.2 0 0 1 2.2 2.2v4.3H8v6.5H6V13.5H4.8V9.2A2.2 2.2 0 0 1 7 7z"/><line x1="12" y1="3" x2="12" y2="21"/><circle cx="17" cy="4.5" r="1.8"/><path d="M17 7a2.2 2.2 0 0 1 2.1 1.5L20.6 13h-1.4l-1 7.5h-2.4L14.8 13h-1.4l1.5-4.5A2.2 2.2 0 0 1 17 7z"/></svg>',
+  door:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v17"/><path d="M2 21h18"/><circle cx="11.5" cy="12.5" r="1" fill="currentColor" stroke="none"/></svg>',
+  doubledoor:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M4 21V4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v17"/><path d="M2 21h20"/><circle cx="9.5" cy="12.5" r="0.9" fill="currentColor" stroke="none"/><circle cx="14.5" cy="12.5" r="0.9" fill="currentColor" stroke="none"/></svg>',
+  threshold:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 17h5"/><path d="M17 17h5"/><path d="M7 12v10"/><path d="M17 12v10"/></svg>',
+  text:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/></svg>',
 };
 const DECOR_DEFS={
   dance:{label:'Dance Floor',w:160,h:84},
@@ -26666,8 +26803,74 @@ const DECOR_DEFS={
   gift:{label:'Gift Table',w:110,h:52},
   photo:{label:'Photo Booth',w:104,h:54},
   buffet:{label:'Buffet',w:150,h:50},
-  restroom:{label:'Restrooms',w:96,h:46}
+  restroom:{label:'Restrooms',w:96,h:46},
+  // Doorways mark a point on a wall rather than enclose an area, so they are wide and
+  // short and draw as line work (see _doorSvg) instead of a dashed zone.
+  door:{label:'Doorway',w:120,h:74,glyph:'door'},
+  doubledoor:{label:'Double Doors',w:150,h:64,glyph:'doubledoor'},
+  threshold:{label:'Open Threshold',w:130,h:40,glyph:'threshold'},
+  // A text label carries the words the user typed in `label`, and a `tstyle`.
+  text:{label:'Text',w:150,h:40,isText:true}
 };
+// Text label styles. `size` is the font size at the item's DEFAULT height (40px); the
+// renderer scales it with the item's actual height so the resize grip changes the text
+// size, which is the only kind of "resize" a bare label can sensibly mean.
+const FTEXT_STYLES={
+  caps:{label:'Zone caps', cls:'ftxt-caps',    size:11},
+  heading:{label:'Heading', cls:'ftxt-heading', size:17},
+  note:{label:'Italic note', cls:'ftxt-note',   size:15},
+  boxed:{label:'Boxed note', cls:'ftxt-boxed',  size:11.5}
+};
+// Doorway line work. Drawn in a 0..W x 0..H viewBox so it stretches with the item.
+// Stroke widths are kept constant via vector-effect so a wide doorway does not get
+// fat walls. Colours come from the same tokens the zones use, so dark mode follows.
+function _doorSvg(kind,w,h){
+  // Drawn in a viewBox that MATCHES the item's pixel size, so nothing is distorted. The
+  // first attempt used a fixed 100x100 box stretched to fit, which squashed the swing arc
+  // into a flat ellipse and made the door read as broken rather than stylised.
+  //
+  // The swing is a TRUE quarter circle: its radius equals the door's opening, which is what
+  // makes it read as an architectural door. The opening is therefore capped by the item's
+  // height as well as its width — a quarter circle of radius r needs r of headroom — so a
+  // short, wide doorway opens narrower rather than drawing an arc that escapes the box.
+  const wall='var(--gold-deep)', swing='var(--gold)';
+  const pad=4, wy=h-6;                       // wall line sits just above the bottom edge
+  const head=Math.max(10, h-14);             // vertical room available for a swing
+  const vb=`0 0 ${w} ${h}`;
+  const open=(frac)=>Math.max(12, Math.min(w*frac, head));
+  if(kind==='doubledoor'){
+    const leaf=Math.max(10, Math.min(w*0.3, head));
+    const gap=leaf*2, xa=(w-gap)/2, xb=xa+gap;
+    return `<svg viewBox="${vb}" preserveAspectRatio="none">
+      <g fill="none" stroke-linecap="round">
+        <line x1="${pad}" y1="${wy}" x2="${xa}" y2="${wy}" stroke="${wall}" stroke-width="4"/>
+        <line x1="${xb}" y1="${wy}" x2="${w-pad}" y2="${wy}" stroke="${wall}" stroke-width="4"/>
+        <path d="M ${xa+leaf} ${wy} A ${leaf} ${leaf} 0 0 0 ${xa} ${wy-leaf}" stroke="${swing}" stroke-width="1.3" stroke-dasharray="4 4"/>
+        <path d="M ${xb-leaf} ${wy} A ${leaf} ${leaf} 0 0 1 ${xb} ${wy-leaf}" stroke="${swing}" stroke-width="1.3" stroke-dasharray="4 4"/>
+        <line x1="${xa}" y1="${wy}" x2="${xa}" y2="${wy-leaf}" stroke="${wall}" stroke-width="3"/>
+        <line x1="${xb}" y1="${wy}" x2="${xb}" y2="${wy-leaf}" stroke="${wall}" stroke-width="3"/>
+      </g></svg>`;
+  }
+  if(kind==='threshold'){
+    // No swing and deliberately no arrow — just a gap in the wall with two jambs.
+    const gap=Math.max(16, w*0.42), x1=(w-gap)/2, x2=x1+gap, j=Math.max(6, Math.min(11, h*0.3));
+    return `<svg viewBox="${vb}" preserveAspectRatio="none">
+      <g fill="none" stroke-linecap="round">
+        <line x1="${pad}" y1="${wy}" x2="${x1}" y2="${wy}" stroke="${wall}" stroke-width="4"/>
+        <line x1="${x2}" y1="${wy}" x2="${w-pad}" y2="${wy}" stroke="${wall}" stroke-width="4"/>
+        <line x1="${x1}" y1="${wy-j}" x2="${x1}" y2="${wy+j}" stroke="${wall}" stroke-width="2.2"/>
+        <line x1="${x2}" y1="${wy-j}" x2="${x2}" y2="${wy+j}" stroke="${wall}" stroke-width="2.2"/>
+      </g></svg>`;
+  }
+  const leaf=open(0.5), x1=(w-leaf)/2, x2=x1+leaf;
+  return `<svg viewBox="${vb}" preserveAspectRatio="none">
+      <g fill="none" stroke-linecap="round">
+        <line x1="${pad}" y1="${wy}" x2="${x1}" y2="${wy}" stroke="${wall}" stroke-width="4"/>
+        <line x1="${x2}" y1="${wy}" x2="${w-pad}" y2="${wy}" stroke="${wall}" stroke-width="4"/>
+        <path d="M ${x2} ${wy} A ${leaf} ${leaf} 0 0 0 ${x1} ${wy-leaf}" stroke="${swing}" stroke-width="1.3" stroke-dasharray="4 4"/>
+        <line x1="${x1}" y1="${wy}" x2="${x1}" y2="${wy-leaf}" stroke="${wall}" stroke-width="3"/>
+      </g></svg>`;
+}
 let _floorDrag=null, _floorDocWired=false, _floorFitScale=1, _floorCW=0, _floorCH=0, _floorFitWired=false;
 // User zoom (multiplier on top of the fit-to-width scale) + pan offset in viewport px.
 let _floorUserZoom=1, _floorPanX=0, _floorPanY=0, _floorBaseFit=1;
@@ -26810,7 +27013,8 @@ function _seatChairXY(t){
     const c=sz.w/2, r=sz.w/2-10+PR;                                  // mirrors _pipsRound
     for(let i=0;i<n;i++){ const a=(-90+i*360/n)*Math.PI/180; out[i]={x:c+r*Math.cos(a), y:c+r*Math.sin(a)}; }
   } else if(shape==='theatre'){
-    const LM=Math.max(_PB,20), GAP=-8, BY=sz.h+PR+GAP;               // mirrors _pipsTheatre
+    const LM=Math.max(_PB,20), GAP=-8;                               // mirrors _pipsTheatre
+    const BY=(_seatSide(t)==='above') ? (-PR-GAP) : (sz.h+PR+GAP);   // ...including the side
     const xAt=i=>LM+(n>1?i*(sz.w-2*LM)/(n-1):(sz.w-2*LM)/2);
     for(let i=0;i<n;i++) out[i]={x:xAt(i), y:BY};
   } else if(shape==='square'){
@@ -27236,7 +27440,7 @@ function _seatReopenCog(){
 // offset via _seatNameTagOrigin before rendering that table's pips.
 let _seatNameTagSink=null;     // null = inline (default); array = collect
 let _seatNameTagOrigin=null;   // {x,y,rot,w,h,scale} of the table currently rendering
-function _pip(x,y,on,init,gid,rot,stagger,tid,si){
+function _pip(x,y,on,init,gid,rot,stagger,tid,si,up){
   const fs=Math.max(8,Math.round(SEAT_PIP*0.35));
   // Keep guest initials upright regardless of table rotation: the pip lives inside the
   // rotated .ftbl-rot wrapper, so counter-rotate the text span by -rot to cancel it out.
@@ -27299,7 +27503,13 @@ function _pip(x,y,on,init,gid,rot,stagger,tid,si){
       // other. Both the editor and the print path made the same mistake by different routes.
       // The offset must be applied AFTER rotation, in SCREEN space, so it always points down.
       const ax=x+SEAT_PIP/2, ay=y+SEAT_PIP/2; // pip CENTRE in table-local space
-      const DROP=SEAT_PIP/2;                  // centre -> bottom edge, applied post-rotation
+      // `up` = this chair sits ABOVE its table (bridal "Seats: Above"), so the pill has to
+      // go above the chair, not below it — otherwise it lands on the table body. That was
+      // exactly the overlap seen when the table was rotated 180 to fake a top table: the
+      // chairs moved, the pill offset did not. DROP flips sign to reach the pip's TOP edge,
+      // and the pill is then lifted by its own full height via translateY(-100%), so the
+      // spacing works out identical to the downward case without measuring the pill.
+      const DROP=(up?-1:1)*SEAT_PIP/2;        // centre -> near edge, applied post-rotation
       const trot=rot?`rotate(${-rot}deg) `:'';
       // Warning class + small badge appended to the name when the guest isn't attending.
       const _wcls=_rsvpWarn?` fnt-${_rsvpWarn}`:'';
@@ -27308,6 +27518,9 @@ function _pip(x,y,on,init,gid,rot,stagger,tid,si){
       // row so long names clear their neighbours. Only needed in 'last' (full-name) mode —
       // 'first' (name + initial) is short enough to stay on one line.
       const dropY=(stagger&&_nameMode==='last')?14:3;
+      // Gap is the SAME 3px (or 14px staggered) either way — above and below must look like
+      // one design, not two. Upwards it is applied as a negative offset on top of the -100%.
+      const _pillShift = up ? `translateY(calc(-100% - ${dropY}px))` : `translateY(${dropY}px)`;
       if(_seatNameTagSink && _seatNameTagOrigin){
         // PRINT path: inline the pill styling (print doc has no .floor-name-tag class)
         // and convert the pip's table-local anchor into CANVAS coordinates so the overlay
@@ -27330,7 +27543,7 @@ function _pip(x,y,on,init,gid,rot,stagger,tid,si){
         // editor's -rot counter-rotation (which only cancels the rotated .ftbl-rot wrapper
         // the editor tags sit inside). Render them upright so every name reads horizontally
         // regardless of the table's rotation.
-        _seatNameTagSink.push(`<span class="floor-name-tag${_wcls}" style="position:absolute;${_SEAT_NAME_PILL_CSS};left:${cax.toFixed(1)}px;top:${cay.toFixed(1)}px;transform:translateX(-50%) translateY(${dropY}px);transform-origin:top center">${_escHtml(nm)}${_wbadge}</span>`);
+        _seatNameTagSink.push(`<span class="floor-name-tag${_wcls}" style="position:absolute;${_SEAT_NAME_PILL_CSS};left:${cax.toFixed(1)}px;top:${cay.toFixed(1)}px;transform:translateX(-50%) ${_pillShift};transform-origin:top center">${_escHtml(nm)}${_wbadge}</span>`);
       } else {
         // EDITOR path: keep the tag inline (moves with its table during drag) and let
         // the theme-aware .floor-name-tag class supply colours for light/dark mode.
@@ -27347,7 +27560,7 @@ function _pip(x,y,on,init,gid,rot,stagger,tid,si){
         // it has no width, so its origin and its anchor are the same point, and the rotation
         // can only un-tilt, never translate. The INNER span carries the pill and does the
         // centring and the drop, in the now-upright frame.
-        const inner=`<span class="floor-name-tag${_wcls}" style="position:absolute;left:0;top:0;transform:translateX(-50%) translateY(${(DROP+dropY).toFixed(1)}px);transform-origin:top center">${_escHtml(nm)}${_wbadge}</span>`;
+        const inner=`<span class="floor-name-tag${_wcls}" style="position:absolute;left:0;top:0;transform:translateX(-50%) translateY(${DROP.toFixed(1)}px) ${_pillShift};transform-origin:top center">${_escHtml(nm)}${_wbadge}</span>`;
         nameTag=`<span style="position:absolute;left:${ax.toFixed(1)}px;top:${ay.toFixed(1)}px;width:0;height:0;transform:${trot||''};transform-origin:center center;pointer-events:none;z-index:40">${inner}</span>`;
       }
     }
@@ -27358,7 +27571,7 @@ function _pip(x,y,on,init,gid,rot,stagger,tid,si){
       : 'background:var(--gold-deep);border:1.5px solid var(--border)');
   return `<span${drag} style="position:absolute;left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;width:${SEAT_PIP}px;height:${SEAT_PIP}px;border-radius:50%;${cur}${_pipFill}"${on?' data-pipon="1"':''}>${inner}</span>${nameTag}`;
 }
-function _pipC(cx,cy,on,init,gid,rot,stagger,tid,si){ const h=SEAT_PIP/2; return _pip(cx-h,cy-h,on,init,gid,rot,stagger,tid,si); }
+function _pipC(cx,cy,on,init,gid,rot,stagger,tid,si,up){ const h=SEAT_PIP/2; return _pip(cx-h,cy-h,on,init,gid,rot,stagger,tid,si,up); }
 function _pipsRound(n,filled,S,inits,gids,rot,tid){
   const c=S/2, PR=SEAT_PIP/2, r=S/2-10+PR, out=[]; // chairs touching the visible table edge (10px body inset)
   // Occupancy is gids[i] — NOT i<filled. The array is sparse: chair 5 can be full
@@ -27382,11 +27595,16 @@ function _pipsLong(n,filled,W,H,inits,t,gids,rot,tid){
   return out.join('');
 }
 // Theatre: every seat along ONE side (front/bottom edge) — chairs outside below table.
-function _pipsTheatre(n,filled,W,H,inits,gids,rot,tid){
-  const PR=SEAT_PIP/2, LM=Math.max(_PB,20), GAP=-8; // chairs touching the visible table edge (8px bottom inset)
-  const BY=H+PR+GAP; // outside below
+// Which side a one-sided (bridal/theatre) table seats its party. 'below' is the default
+// and the pre-existing behaviour, so every plan built before this option keeps its exact
+// layout — only a table explicitly switched to 'above' moves.
+function _seatSide(t){ return (t && t.seatSide === 'above') ? 'above' : 'below'; }
+function _pipsTheatre(n,filled,W,H,inits,gids,rot,tid,t){
+  const PR=SEAT_PIP/2, LM=Math.max(_PB,20), GAP=-8; // chairs touching the visible table edge (8px inset)
+  const up=_seatSide(t)==='above';
+  const BY=up ? (-PR-GAP) : (H+PR+GAP); // outside above / outside below
   const out=[]; const xAt=(i)=>LM+(n>1?i*(W-2*LM)/(n-1):(W-2*LM)/2);
-  for(let i=0;i<n;i++){ out.push(_pipC(xAt(i), BY, !!(gids&&gids[i]), inits&&inits[i]||null, (gids&&gids[i])||null, rot, i%2, tid, i)); }
+  for(let i=0;i<n;i++){ out.push(_pipC(xAt(i), BY, !!(gids&&gids[i]), inits&&inits[i]||null, (gids&&gids[i])||null, rot, i%2, tid, i, up)); }
   return out.join('');
 }
 function _pipsSquare(n,filled,S,inits,gids,rot,tid){
@@ -27424,9 +27642,17 @@ function _floorLabel(t,filled){
     counter = -rot;
   }
   const lblTransform = counter ? `transform:rotate(${counter}deg);` : '';
+  // Counts are hidden only when rendering FOR PRINT and the option is off. `_seatNameTagSink`
+  // is the print marker already used by the name pills — reusing it means the two can never
+  // disagree about which pass is running. The on-screen editor is untouched: the counts are
+  // the whole point there. With the line gone the name is the only child, so the flex
+  // centring already in the wrapper keeps it optically centred — the table does not resize.
+  const hideCount = (_seatNameTagSink !== null) && !_seatingCounts;
+  const countLine = hideCount ? '' :
+    `<div style="font-size:9.5px;font-weight:500;margin-top:1px;color:${full?'var(--green)':'var(--muted)'}">${filled}/${t.seats}${full?' ✓':''}</div>`;
   return `<div style="text-align:center;line-height:1.12;padding:0 4px;${lblTransform}">
     <div style="font-family:'Cormorant Garamond',serif;font-size:12.5px;font-weight:600;color:var(--ink)">${_escHtml(t.name||'Table')}</div>
-    <div style="font-size:9.5px;font-weight:500;margin-top:1px;color:${full?'var(--green)':'var(--muted)'}">${filled}/${t.seats}${full?' ✓':''}</div>
+    ${countLine}
   </div>`;
 }
 function _floorPips(t,shape,filled,conflict){
@@ -27441,7 +27667,7 @@ function _floorPips(t,shape,filled,conflict){
   const _rot=t.rotation||0;
   if(shape==='long'){ pips=_pipsLong(t.seats,filled,sz.w,sz.h,inits,t,gids,_rot,t.id); inset='9px'; radius='12px'; }
   else if(shape==='square'){ pips=_pipsSquare(t.seats,filled,sz.w,inits,gids,_rot,t.id); inset='9px'; radius='14px'; }
-  else if(shape==='theatre'){ pips=_pipsTheatre(t.seats,filled,sz.w,sz.h,inits,gids,_rot,t.id); inset='9px 9px 8px 9px'; radius='12px'; }
+  else if(shape==='theatre'){ pips=_pipsTheatre(t.seats,filled,sz.w,sz.h,inits,gids,_rot,t.id,t); inset='9px 9px 8px 9px'; radius='12px'; }
   else { pips=_pipsRound(t.seats,filled,sz.w,inits,gids,_rot,t.id); inset='10px'; radius='50%'; }
   return pips+
     `<div style="position:absolute;inset:${inset};background:var(--cream);border:1.5px solid ${ring};border-radius:${radius};display:flex;align-items:center;justify-content:center;overflow:hidden">${_floorLabel(t,filled)}</div>`;
@@ -27471,7 +27697,14 @@ function _floorTableHtml(t,style,cf,sep){
   const separated=!!(sep&&sep.tableHas.has(t.id));
   const inner=(style==='ring')?_floorRing(t,shape,filled,conflict):_floorPips(t,shape,filled,conflict);
   const rot=t.rotation||0;
-  const rotHandle=`<span class="floor-rotate" data-id="${t.id}" title="Drag to rotate" style="position:absolute;left:${Math.round(w/2)-10}px;top:-34px;width:20px;height:20px;border-radius:50%;background:var(--cream);border:1.5px solid var(--gold-deep);display:flex;align-items:center;justify-content:center;cursor:grab;font-size:12px;color:var(--gold-deep);user-select:none;z-index:3">↺</span><span style="position:absolute;left:${Math.round(w/2)-0.5}px;top:-26px;width:1px;height:20px;background:var(--border);opacity:.5;pointer-events:none"></span>`;
+  // The handle normally floats above the table on a short stalk. A bridal table seating
+  // its party ABOVE puts chairs and name pills in exactly that space, so the handle landed
+  // on top of the names. Flip it to the empty side instead — the side the seats are not on
+  // is always free, which is the whole point of a one-sided table.
+  const _handleBelow = (shape==='theatre' && _seatSide(t)==='above');
+  const _hTop = _handleBelow ? (h+14) : -34;      // handle box top
+  const _sTop = _handleBelow ? (h+6)  : -26;      // stalk top
+  const rotHandle=`<span class="floor-rotate" data-id="${t.id}" title="Drag to rotate" style="position:absolute;left:${Math.round(w/2)-10}px;top:${_hTop}px;width:20px;height:20px;border-radius:50%;background:var(--cream);border:1.5px solid var(--gold-deep);display:flex;align-items:center;justify-content:center;cursor:grab;font-size:12px;color:var(--gold-deep);user-select:none;z-index:3">↺</span><span style="position:absolute;left:${Math.round(w/2)-0.5}px;top:${_sTop}px;width:1px;height:20px;background:var(--border);opacity:.5;pointer-events:none"></span>`;
   /* ftbl-rot is a separate inner wrapper that carries the rotation transform.
      floor-table itself stays transform-free so left/top drag never fights GPU compositing. */
   return `<div class="floor-table" data-kind="table" data-id="${t.id}" id="ftab-${t.id}"
@@ -27485,6 +27718,24 @@ function _floorTableHtml(t,style,cf,sep){
     ${separated?_separationBadge():''}
     <span class="floor-resize" data-id="${t.id}" data-kind="table" title="Drag to resize"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M9 3 L3 9 M9 6.5 L6.5 9"/></svg></span>
   </div>`;
+}
+// A decor item renders as one of three things. Zones (dance floor, bar…) keep the dashed
+// hatched box. Doorways draw line work — they mark a point on a wall, so a filled area
+// would misrepresent them. Text is bare words with no box at all, because a label that
+// comes with a border is a zone, not a label.
+function _decorBody(d,def,w,h,icon,lblTransform){
+  if(def.isText){
+    const st=FTEXT_STYLES[d.tstyle]||FTEXT_STYLES.caps;
+    // Scale the type with the item's height so the resize grip resizes the TEXT. 40 is the
+    // default height the sizes above are quoted at.
+    const fs=Math.max(7, st.size*(h/40));
+    const txt=(d.label==null||d.label==='')?'Double-tap to edit':d.label;
+    const dim=(d.label==null||d.label==='')?'opacity:.45;':'';
+    return `<div class="ftxt-wrap" style="${lblTransform}">
+      <span class="ftxt ${st.cls}" style="font-size:${fs.toFixed(1)}px;${dim}">${_escHtml(txt)}</span></div>`;
+  }
+  if(def.glyph) return `<div class="fdoor">${_doorSvg(def.glyph,w,h)}</div>`;
+  return `<div class="decor-zone"><div class="decor-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;${lblTransform}">${icon}<span class="decor-lbl">${_escHtml(def.label)}</span></div></div>`;
 }
 function _floorDecorHtml(d){
   const def=DECOR_DEFS[d.type]||{label:d.label||'Area',w:120,h:56};
@@ -27500,9 +27751,10 @@ function _floorDecorHtml(d){
   return `<div class="floor-decor" data-kind="decor" data-id="${d.id}" id="fdec-${d.id}"
     style="left:${d.x||0}px;top:${d.y||0}px;width:${w}px;height:${h}px">
     <div class="fdec-rot" style="position:absolute;left:0;top:0;width:${w}px;height:${h}px;transform:rotate(${rot}deg);transform-origin:center center">
-      <div class="decor-zone"><div class="decor-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;${lblTransform}">${icon}<span class="decor-lbl">${_escHtml(def.label)}</span></div></div>
+      ${_decorBody(d,def,w,h,icon,lblTransform)}
       ${rotHandle}
     </div>
+    ${def.isText?`<span class="decor-edit" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation();openFloorTextEditor('${d.id}')" title="Edit text" style="position:absolute;top:-7px;right:13px;width:16px;height:16px;border-radius:50%;background:var(--panel,var(--cream));border:1px solid var(--border);color:var(--gold-deep);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>`:''}
     <span class="decor-x" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation();removeDecor('${d.id}')" style="position:absolute;top:-7px;right:-7px;width:16px;height:16px;border-radius:50%;background:var(--panel,var(--cream));border:1px solid var(--border);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;z-index:5">×</span>
     <span class="floor-resize" data-id="${d.id}" data-kind="decor" title="Drag to resize"><svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M9 3 L3 9 M9 6.5 L6.5 9"/></svg></span>
   </div>`;
@@ -27564,19 +27816,84 @@ function addDecor(type){
   if(!Array.isArray(STATE.settings.floorDecor)) STATE.settings.floorDecor=[];
   const def=DECOR_DEFS[type]||{w:120,h:56};
   const n=STATE.settings.floorDecor.length;
-  STATE.settings.floorDecor.push({id:'d'+Date.now(),type,x:24+n*18,y:24+n*18,w:def.w,h:def.h});
+  const item={id:'d'+Date.now(),type,x:24+n*18,y:24+n*18,w:def.w,h:def.h};
+  if(def.isText){ item.label=''; item.tstyle='caps'; }
+  STATE.settings.floorDecor.push(item);
   saveToStorage(); closeModalDirect(); navigate('seating');
 }
+// ── Floorplan text labels: add / edit ───────────────────────────────────────
+// `id` null = creating a new label, otherwise editing an existing one. Both go through
+// the same dialog so the words and the style are always changed the same way, and a
+// label can never exist on the plan without a way to fix its text.
+function openFloorTextEditor(id){
+  const d = id ? (STATE.settings.floorDecor||[]).find(x=>x.id===id) : null;
+  const cur = d ? (d.label||'') : '';
+  const curStyle = (d && d.tstyle) || 'caps';
+  const styleBtns = Object.keys(FTEXT_STYLES).map(k=>{
+    const st=FTEXT_STYLES[k];
+    return `<button type="button" class="ftxt-pick${k===curStyle?' on':''}" data-style="${k}"
+      onclick="_floorTextPick('${k}')"
+      style="flex:1;min-width:104px;padding:9px 10px;border-radius:9px;border:2px solid ${k===curStyle?'var(--gold)':'var(--border)'};background:transparent;cursor:pointer;text-align:center">
+      <span class="ftxt ${st.cls}" style="font-size:${Math.min(15,st.size)}px">Aa</span>
+      <div style="font-size:10.5px;color:var(--muted);margin-top:4px">${st.label}</div>
+    </button>`;
+  }).join('');
+  openModal(id?'Edit text':'Add text to the floorplan',
+    `<div class="form-label">Text</div>
+     <input class="form-input" id="ftxt-input" maxlength="120" value="${_escAttr(cur)}" placeholder="e.g. Ceremony lawn"/>
+     <div class="form-label" style="margin-top:12px">Style</div>
+     <div id="ftxt-styles" style="display:flex;gap:8px;flex-wrap:wrap">${styleBtns}</div>`,
+    `<button class="btn btn-outline" onclick="closeModalDirect()">Cancel</button>
+     <button class="btn btn-primary" onclick="_floorTextSave(${id?`'${id}'`:'null'})">${id?'Save':'Add'}</button>`);
+  setTimeout(()=>{ const i=document.getElementById('ftxt-input'); if(i){ i.focus(); i.select(); } }, 60);
+}
+let _floorTextStyle='caps';
+function _floorTextPick(k){
+  _floorTextStyle=k;
+  document.querySelectorAll('#ftxt-styles .ftxt-pick').forEach(b=>{
+    const on=b.dataset.style===k;
+    b.classList.toggle('on',on);
+    b.style.borderColor = on ? 'var(--gold)' : 'var(--border)';
+  });
+}
+function _floorTextSave(id){
+  const inp=document.getElementById('ftxt-input');
+  const txt=(inp&&inp.value||'').trim();
+  // An empty label would be an invisible object on the plan that still catches drags —
+  // refuse rather than create something the user cannot see to delete.
+  if(!txt){ _showInfoToast('Type some text first.', null, null); if(inp) inp.focus(); return; }
+  if(!Array.isArray(STATE.settings.floorDecor)) STATE.settings.floorDecor=[];
+  if(id){
+    const d=STATE.settings.floorDecor.find(x=>x.id===id);
+    if(d){ d.label=txt; d.tstyle=_floorTextStyle; }
+  } else {
+    const def=DECOR_DEFS.text, n=STATE.settings.floorDecor.length;
+    STATE.settings.floorDecor.push({id:'d'+Date.now(),type:'text',label:txt,tstyle:_floorTextStyle,
+      x:24+n*18,y:24+n*18,w:def.w,h:def.h});
+  }
+  saveToStorage(); closeModalDirect(); navigate('seating');
+}
+// Opening the editor must start from the label's OWN style, not whatever was picked last.
+const _openFloorTextEditorBase=openFloorTextEditor;
+openFloorTextEditor=function(id){
+  const d = id ? (STATE.settings.floorDecor||[]).find(x=>x.id===id) : null;
+  _floorTextStyle = (d && d.tstyle) || 'caps';
+  return _openFloorTextEditorBase(id);
+};
+
 function removeDecor(id){
   if(_floorLayoutLocked()) return;
   STATE.settings.floorDecor=(STATE.settings.floorDecor||[]).filter(d=>d.id!==id);
   saveToStorage(); navigate('seating');
 }
 function openAddDecor(){
-  const order=['dance','stage','entrance','bar','lectern','cake','gift','photo','buffet','restroom'];
+  const order=['text','door','doubledoor','threshold','dance','stage','entrance','bar','lectern','cake','gift','photo','buffet','restroom'];
   const btns=order.filter(k=>DECOR_DEFS[k]).map(k=>{
     const def=DECOR_DEFS[k];
-    return `<button class="btn btn-outline" onclick="addDecor('${k}')" style="display:flex;align-items:center;gap:8px;justify-content:flex-start;text-align:left;padding:10px 12px">
+    // Text can't be dropped blind — an empty label is invisible on the plan — so it opens
+    // its editor first and only lands once there are words to show.
+    const act = (k==='text') ? `openFloorTextEditor(null)` : `addDecor('${k}')`;
+    return `<button class="btn btn-outline" onclick="${act}" style="display:flex;align-items:center;gap:8px;justify-content:flex-start;text-align:left;padding:10px 12px">
       <span style="display:inline-flex;color:var(--gold-deep);flex-shrink:0">${DECOR_ICONS[k]||''}</span>
       <span style="font-size:13px">${_escHtml(def.label)}</span>
     </button>`;
@@ -28189,10 +28506,19 @@ function openTableSeatManager(id){
           </div>`;
       }).join('')}
     </div>`):'';
+  // Bridal seats one side only, so which side is a real choice. Long seats BOTH sides and
+  // round/square seat all the way round, so the control is meaningless for them and is not
+  // shown — same reasoning as Head of Table being long-only.
+  const sideSection=shape==='theatre'?(`<div><div class="form-label">Party sits</div>
+      <div class="seat-seg">
+        <button class="${_seatSide(t)==='below'?'on':''}" onclick="setTableSeatSide('${t.id}','below')">Below</button>
+        <button class="${_seatSide(t)==='above'?'on':''}" onclick="setTableSeatSide('${t.id}','above')">Above</button>
+      </div></div>`):'';
   const curRot=(((t.rotation||0)%360)+360)%360;
   const body=`
     <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px">
       <div><div class="form-label">Shape</div><div class="seat-seg">${shapeSeg}</div></div>
+      ${sideSection}
       <div><div class="form-label">Seats</div>
         <div style="display:inline-flex;align-items:center;gap:6px">
           <button class="btn btn-outline btn-sm" onclick="_mgrSetSeats('${t.id}',-1)">−</button>
@@ -28309,6 +28635,18 @@ function setTableShape(id,shape){
   const t=STATE.tables.find(x=>x.id===id); if(!t) return;
   t.shape=shape; saveToStorage(); navigate('seating'); openTableSeatManager(id);
 }
+// Which side a bridal table's party sits. Chairs sit OUTSIDE the table body and their name
+// pills sit outside them again, so switching to 'above' needs roughly 44px of clear space
+// over the table. The canvas only grows right and down, so a table already near the top
+// would push its own party off the edge. Nudge it down rather than let that happen — the
+// alternative is a control that silently does nothing visible.
+const _SEAT_ABOVE_HEADROOM=44;
+function setTableSeatSide(id,side){
+  const t=STATE.tables.find(x=>x.id===id); if(!t) return;
+  t.seatSide=(side==='above')?'above':'below';
+  if(t.seatSide==='above' && (t.y||0)<_SEAT_ABOVE_HEADROOM) t.y=_SEAT_ABOVE_HEADROOM;
+  saveToStorage(); navigate('seating'); openTableSeatManager(id);
+}
 
 function renderSeatingFloor(c,actions){
   _autoLayoutTables();
@@ -28333,6 +28671,10 @@ function renderSeatingFloor(c,actions){
       <button class="btn btn-outline btn-sm gbtn" onclick="_downloadSeatingCsv()" title="Download guest names + table numbers as a CSV spreadsheet" style="white-space:nowrap;display:inline-flex;align-items:center;gap:5px">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
         <span class="gbtn-label">CSV</span>
+      </button>
+      <button class="btn btn-outline btn-sm gbtn" onclick="_downloadFloorplanPng()" title="Save the floorplan on its own as a PNG image (no guest list). Colour or black &amp; white follows the setting in Print Plan." style="white-space:nowrap;display:inline-flex;align-items:center;gap:5px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span class="gbtn-label">PNG</span>
       </button>
         <span id="seat-cog-wrap" style="position:relative;display:inline-flex;align-items:center">
           <button class="btn-icon" onclick="_seatToggleCog(event)" aria-label="Seating display options" title="Display options, arrange &amp; reset">${_seatCogIcon()}</button>
