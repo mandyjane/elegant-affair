@@ -18,7 +18,7 @@
  * every cache that isn't the current one, so the next launch refetches from the network.
  */
 
-const CACHE_VERSION = 'ea-v173';
+const CACHE_VERSION = 'ea-v174';
 const SHELL = [
   './',
   './index.html',

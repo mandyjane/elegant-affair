@@ -25801,7 +25801,7 @@ let _seatingCounts=true;
 // can land a launch late — and there was previously NO way to tell which build was
 // actually running. Diagnosing "I uploaded it but nothing changed" meant hunting for
 // whether a feature happened to appear. Bump this with every release.
-const APP_BUILD='v173';
+const APP_BUILD='v174';
 const APP_BUILD_DATE='2026-09-30';
 function _seatingPrintHtml(forPreview){
   const ev=STATE.event||{};
@@ -25874,11 +25874,16 @@ function _seatingPrintHtml(forPreview){
     const MAX_UP=forPreview?3.2:4.0;
     scale=Math.min(AVAIL_W/cw, AVAIL_H/ch, MAX_UP);
   }
+  // Same body as the editor and the PNG — see _decorGeom. Only the positioning wrapper
+  // differs (absolute into the print canvas, with the page offsets applied), and none of
+  // the editing chrome is emitted, which is what makes this a print wrapper rather than a
+  // second renderer.
   const decorHtml=(STATE.settings.floorDecor||[]).map(d=>{
-    const def=DECOR_DEFS[d.type]||{label:d.label||'Area',w:120,h:56};
-    const w=d.w||def.w, h=d.h||def.h, rot=d.rotation||0;
-    const icon=(h>=46)?(DECOR_ICONS[d.type]||''):'';
-    return `<div style="position:absolute;left:${(d.x||0)+offX}px;top:${(d.y||0)+offY}px;width:${w}px;height:${h}px;transform:rotate(${rot}deg);transform-origin:center center;border:2px dashed #9A7B2E;color:#9A7B2E;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:2px 4px;overflow:hidden;background:repeating-linear-gradient(45deg,rgba(201,161,74,.10),rgba(201,161,74,.10) 6px,transparent 6px,transparent 12px)">${icon}<span style="font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;line-height:1.15">${_escHtml(def.label)}</span></div>`;
+    const g=_decorGeom(d);
+    return `<div style="position:absolute;left:${(d.x||0)+offX}px;top:${(d.y||0)+offY}px;width:${g.w}px;height:${g.h}px">
+      <div style="position:absolute;left:0;top:0;width:${g.w}px;height:${g.h}px;transform:rotate(${g.rot}deg);transform-origin:center center">
+        ${_decorBody(d,g.def,g.w,g.h,g.icon,g.lblTransform)}
+      </div></div>`;
   }).join('');
   const _nameTags=[];
   const tablesHtml=tables.map(t=>{
@@ -27753,7 +27758,13 @@ function _decorBody(d,def,w,h,icon,lblTransform){
   if(def.glyph) return `<div class="fdoor">${_doorSvg(def.glyph,w,h)}</div>`;
   return `<div class="decor-zone"><div class="decor-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;${lblTransform}">${icon}<span class="decor-lbl">${_escHtml(def.label)}</span></div></div>`;
 }
-function _floorDecorHtml(d){
+// Everything about how a decor item LOOKS, in one place. The print document used to carry
+// its own hardcoded copy of this — a dashed hatched box with `def.label` inside — which is
+// why doorways printed as boxes reading "DOORWAY" and a text label printed the literal word
+// "TEXT" instead of the user's words, while the editor and the PNG showed them correctly.
+// Three renderers, two of them right. Both callers now go through here, so a new decor kind
+// cannot be added to one and forgotten in the other.
+function _decorGeom(d){
   const def=DECOR_DEFS[d.type]||{label:d.label||'Area',w:120,h:56};
   const w=d.w||def.w, h=d.h||def.h;
   const icon=(h>=46)?(DECOR_ICONS[d.type]||''):'';
@@ -27763,6 +27774,10 @@ function _floorDecorHtml(d){
   const norm=((rot%360)+360)%360;
   const counter = (norm>90 && norm<270) ? 180 : 0;
   const lblTransform = counter ? `transform:rotate(${counter}deg);` : '';
+  return {def,w,h,icon,rot,lblTransform};
+}
+function _floorDecorHtml(d){
+  const g=_decorGeom(d), def=g.def, w=g.w, h=g.h, icon=g.icon, rot=g.rot, lblTransform=g.lblTransform;
   const rotHandle=`<span class="floor-rotate" data-id="${d.id}" data-kind="decor" title="Drag to rotate" style="position:absolute;left:${Math.round(w/2)-10}px;top:-34px;width:20px;height:20px;border-radius:50%;background:var(--cream);border:1.5px solid var(--gold-deep);display:flex;align-items:center;justify-content:center;cursor:grab;font-size:12px;color:var(--gold-deep);user-select:none;z-index:4">↺</span><span style="position:absolute;left:${Math.round(w/2)-0.5}px;top:-26px;width:1px;height:20px;background:var(--border);opacity:.5;pointer-events:none"></span>`;
   return `<div class="floor-decor" data-kind="decor" data-id="${d.id}" id="fdec-${d.id}"
     style="left:${d.x||0}px;top:${d.y||0}px;width:${w}px;height:${h}px">
