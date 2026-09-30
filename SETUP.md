@@ -111,7 +111,7 @@ When you have a new version:
 2. Open `sw.js`, find this line near the top, and increase the number:
 
    ```js
-   const CACHE_VERSION = 'ea-v175';
+   const CACHE_VERSION = 'ea-v176';
    ```
 
 3. Commit

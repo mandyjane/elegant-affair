@@ -25797,7 +25797,7 @@ let _seatingCounts=true;
 // can land a launch late — and there was previously NO way to tell which build was
 // actually running. Diagnosing "I uploaded it but nothing changed" meant hunting for
 // whether a feature happened to appear. Bump this with every release.
-const APP_BUILD='v175';
+const APP_BUILD='v176';
 const APP_BUILD_DATE='2026-09-30';
 function _seatingPrintHtml(forPreview){
   const ev=STATE.event||{};
@@ -26166,9 +26166,15 @@ function _setSeatingPreviewNameMode(mode){
   STATE.settings.seatingNameMode=mode;
   STATE.settings.seatingShowNames=(mode!=='off');
   saveToStorage();
-  if(document.getElementById('modal-overlay') && !document.getElementById('modal-overlay').classList.contains('hidden')){
-    openSeatingPrintPreview();
-  }
+  // Re-render the seating page underneath as well, not just the preview. Name mode is
+  // baked into the floorplan's markup at render time — unlike counts and B&W, which are
+  // read at export time — so leaving the page un-rendered left two things stale: the PNG
+  // (which clones the LIVE floorplan, and so kept the old names) and the editor itself
+  // once the preview was closed. Writing STATE without re-rendering the view that state
+  // describes is the actual fault; refreshing here fixes both symptoms at the source.
+  const wasOpen = document.getElementById('modal-overlay') && !document.getElementById('modal-overlay').classList.contains('hidden');
+  navigate('seating');
+  if(wasOpen) openSeatingPrintPreview();
 }
 function _fitSeatingPreviewFloor(){
   requestAnimationFrame(()=>{
