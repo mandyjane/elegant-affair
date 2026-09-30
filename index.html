@@ -25801,7 +25801,7 @@ let _seatingCounts=true;
 // can land a launch late — and there was previously NO way to tell which build was
 // actually running. Diagnosing "I uploaded it but nothing changed" meant hunting for
 // whether a feature happened to appear. Bump this with every release.
-const APP_BUILD='v172';
+const APP_BUILD='v173';
 const APP_BUILD_DATE='2026-09-30';
 function _seatingPrintHtml(forPreview){
   const ev=STATE.event||{};
@@ -26255,6 +26255,13 @@ function _downloadSeatingPlan(){
 //     as part of the plan.
 function _floorPngStrip(root){
   root.querySelectorAll('.floor-rotate, .decor-x, .decor-edit, .floor-resize').forEach(n=>n.remove());
+  // Seat counts follow the same Show/Hide setting as the printed plan. They cannot be
+  // suppressed at render time the way the print pass does it: that branch keys off
+  // `_seatNameTagSink`, which is only set while building the print document, whereas this
+  // export clones the LIVE editor DOM — where counts are always drawn, because that is
+  // where they are wanted. So they are removed from the clone instead, which is also why
+  // the count line carries the `.fp-count` class.
+  if(!_seatingCounts) root.querySelectorAll('.fp-count').forEach(n=>n.remove());
   // The stalk under each rotate handle is an unclassed span; it is the only 1px-wide
   // absolutely positioned element in the tree, so match it by its inline style.
   root.querySelectorAll('span[style*="width:1px"]').forEach(n=>n.remove());
@@ -27658,7 +27665,7 @@ function _floorLabel(t,filled){
   // centring already in the wrapper keeps it optically centred — the table does not resize.
   const hideCount = (_seatNameTagSink !== null) && !_seatingCounts;
   const countLine = hideCount ? '' :
-    `<div style="font-size:9.5px;font-weight:500;margin-top:1px;color:${full?'var(--green)':'var(--muted)'}">${filled}/${t.seats}${full?' ✓':''}</div>`;
+    `<div class="fp-count" style="font-size:9.5px;font-weight:500;margin-top:1px;color:${full?'var(--green)':'var(--muted)'}">${filled}/${t.seats}${full?' ✓':''}</div>`;
   return `<div style="text-align:center;line-height:1.12;padding:0 4px;${lblTransform}">
     <div style="font-family:'Cormorant Garamond',serif;font-size:12.5px;font-weight:600;color:var(--ink)">${_escHtml(t.name||'Table')}</div>
     ${countLine}
