@@ -33931,26 +33931,28 @@ function _wwRowHtml(x){
     ? `<button onclick="toggleWwThanked('${x.id}')" title="Thanked — click to undo" aria-label="Thanked" style="background:none;border:none;cursor:pointer;color:var(--green,#5C8A4E);display:inline-flex;padding:4px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>`
     : `<button onclick="toggleWwThanked('${x.id}')" title="Mark thank-you sent" aria-label="Thank-you pending" style="background:none;border:none;cursor:pointer;color:var(--gold-deep);display:inline-flex;padding:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>`;
   const addr = (x.address||'').trim();
-  const noteLine = x.note?`<span style=”display:block;font-size:11px;color:var(--muted);font-style:italic;margin-top:2px”>”${_wwEsc(x.note)}”</span>`:'';
+  const noteLine = x.note?`<span style="display:block;font-size:11px;color:var(--muted);font-style:italic;margin-top:2px">"${_wwEsc(x.note)}”</span>`:'';
   const addrLine = addr
-    ? `<span style=”display:block;font-size:11px;color:var(--muted);margin-top:3px”><svg width=”9” height=”9” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round” style=”vertical-align:middle;margin-right:3px”><path d=”M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z”/><circle cx=”12” cy=”10” r=”3”/></svg>${_wwEsc(addr)}</span>`
-    : `<span style=”display:block;font-size:11px;color:var(--gold-deep);margin-top:3px;cursor:pointer” onclick=”closeDots();openWwContribution('${x.id}')”><svg width=”9” height=”9” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round” style=”vertical-align:middle;margin-right:3px”><path d=”M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z”/><circle cx=”12” cy=”10” r=”3”/></svg>Add address</span>`;
-  return `<div style=”display:flex;align-items:center;gap:12px;background:var(--card,var(--cream));border:1px solid var(--border);border-radius:11px;padding:11px 13px”>
-      <span style=”width:32px;height:32px;border-radius:50%;background:var(--surface);color:var(--gold-deep);display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-weight:500;align-self:flex-start;margin-top:1px”>${_wwEsc(_wwInitials(x.name))}</span>
-      <span style=”flex:1;min-width:0;overflow:hidden”>
-        <span style=”display:block;font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis”>${_wwEsc(x.name||'Anonymous')}</span>
-        <span style=”display:block;font-size:11px;color:var(--muted)”>${_wwEsc(meta)}</span>
+    ? `<span style="display:block;font-size:11px;color:var(--muted);margin-top:3px"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${_wwEsc(addr)}</span>`
+    : `<span style="display:block;font-size:11px;color:var(--gold-deep);margin-top:3px;cursor:pointer" onclick="closeDots();openWwContribution('${x.id}')"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Add address</span>`;
+  return `<div style="display:flex;align-items:center;gap:12px;background:var(--card,var(--cream));border:1px solid var(--border);border-radius:11px;padding:11px 13px">
+      <span style="width:32px;height:32px;border-radius:50%;background:var(--surface);color:var(--gold-deep);display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-weight:500;align-self:flex-start;margin-top:1px">${_wwEsc(_wwInitials(x.name))}</span>
+      <div style="flex:1;min-width:0;overflow:hidden">
+        <span style="display:block;font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${_wwEsc(x.name||'Anonymous')}</span>
+        <span style="display:block;font-size:11px;color:var(--muted)">${_wwEsc(meta)}</span>
         ${noteLine}${addrLine}
-      </span>
-      <span style=”display:inline-flex;align-items:center;gap:4px;flex-shrink:0;align-self:flex-start;margin-top:1px”>
-        <span style=”font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink)”>${fmt(Number(x.amount)||0)}</span>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:4px;flex-shrink:0;align-self:flex-start;margin-top:1px">
+        <span style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink)">${fmt(Number(x.amount)||0)}</span>
         ${thankBtn}
-        <button class=”dots-btn” onclick=”toggleDots(event,'wwdots-${x.id}')”>···</button>
-        <span class=”dots-dropdown hidden” id=”wwdots-${x.id}”>
-          <button onclick=”closeDots();openWwContribution('${x.id}')”><svg width=”13” height=”13” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7”/><path d=”M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z”/></svg> Edit</button>
-          <button class=”danger” onclick=”closeDots();deleteWwContribution('${x.id}')”><svg width=”13” height=”13” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><polyline points=”3 6 5 6 21 6”/><path d=”M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6”/></svg> Delete</button>
-        </span>
-      </span>
+        <div class="dots-menu">
+          <button class="dots-btn" onclick="toggleDots(event,'wwdots-${x.id}')">···</button>
+          <div class="dots-dropdown hidden" id="wwdots-${x.id}">
+            <button onclick="closeDots();openWwContribution('${x.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit</button>
+            <button class="danger" onclick="closeDots();deleteWwContribution('${x.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Delete</button>
+          </div>
+        </div>
+      </div>
     </div>`;
 }
 
