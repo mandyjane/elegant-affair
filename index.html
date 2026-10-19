@@ -26582,16 +26582,17 @@ function _nameAutocomplete(inputId){
     const names = _guestNameList();
     const matches = names.filter(n=>n.toLowerCase().includes(q));
     if(!matches.length){ dd.style.display='none'; return; }
-    dd.innerHTML = matches.map((n,i)=>
-      `<div data-idx="${i}" style="padding:9px 13px;cursor:pointer;border-bottom:.5px solid var(--border);color:var(--ink);transition:background .1s"
+    dd.innerHTML = matches.map((n,i)=>{
+      const esc=n.replace(/"/g,'&quot;');
+      const hi=n.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<b>$1</b>');
+      return `<div data-idx="${i}" data-name="${esc}" style="padding:9px 13px;cursor:pointer;border-bottom:.5px solid var(--border);color:var(--ink);transition:background .1s"
         onmouseenter="this.style.background='var(--parchment)'"
         onmouseleave="this.style.background=''"
-        onmousedown="event.preventDefault()"
-        onclick="_acPick('${inputId}','${n.replace(/'/g,"&#39;")}')">
-        ${n.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<b>$1</b>')}
-      </div>`
-    ).join('');
-    // Remove bottom border from last item
+        onmousedown="event.preventDefault()">${hi}</div>`;
+    }).join('');
+    dd.querySelectorAll('[data-idx]').forEach(el=>{
+      el.addEventListener('click',()=>_acPick(inputId, el.dataset.name));
+    });
     const last=dd.lastElementChild;
     if(last) last.style.borderBottom='none';
     dd.style.display='block';
