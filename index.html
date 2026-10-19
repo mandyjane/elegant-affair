@@ -7481,10 +7481,14 @@ function _gtAttachPan(){
   if(typeof reorderMode!=='undefined' && reorderMode){ w.classList.remove('gt-pannable'); return; }
   w.classList.add('gt-pannable');
   let down=false, sx=0, sl=0, moved=false, pid=null;
+  // Suppress text selection while panning — fires before the selection starts
+  w.addEventListener('selectstart',function(e){ if(down) e.preventDefault(); });
   w.addEventListener('pointerdown',function(e){
     if(e.button!==0) return;
     if(e.target.closest('input,select,textarea,button,a,[contenteditable="true"],[draggable="true"],.gt-handle')) return;
     down=true; moved=false; sx=e.clientX; sl=w.scrollLeft; pid=e.pointerId;
+    // Suppress selection immediately on mousedown so text never highlights during drag
+    w.style.userSelect='none'; w.style.webkitUserSelect='none';
     // Do NOT setPointerCapture or add gt-grabbing here — wait until movement starts.
     // Capturing on every pointerdown suppresses click events on child elements.
   });
@@ -7502,6 +7506,7 @@ function _gtAttachPan(){
   let panEndTime=0;
   const end=function(e){
     if(!down) return; down=false; w.classList.remove('gt-grabbing');
+    w.style.userSelect=''; w.style.webkitUserSelect='';
     try{ if(pid!=null) w.releasePointerCapture(pid); }catch(_){}
     if(moved) panEndTime=Date.now();
     moved=false; pid=null;
@@ -12728,11 +12733,13 @@ function _rsvpAttachPan(){
   if(!w) return;
   w.classList.add('rsvp-grabbable');
   let down=false, sx=0, sl=0, moved=false, pid=null;
+  w.addEventListener('selectstart',function(e){ if(down) e.preventDefault(); });
   w.addEventListener('pointerdown',function(e){
     if(e.button!==0) return;
     if(e.target.closest('input,select,textarea,button,a,[contenteditable="true"],.sort-th,th')) return;
     down=true; moved=false; sx=e.clientX; sl=w.scrollLeft; pid=e.pointerId;
     w.classList.add('rsvp-grabbing');
+    w.style.userSelect='none'; w.style.webkitUserSelect='none';
     try{ w.setPointerCapture(e.pointerId); }catch(_){}
   });
   w.addEventListener('pointermove',function(e){
@@ -12741,7 +12748,7 @@ function _rsvpAttachPan(){
     if(Math.abs(dx)>3) moved=true;
     w.scrollLeft=sl-dx;
   });
-  const end=function(){ if(!down) return; down=false; w.classList.remove('rsvp-grabbing'); try{ if(pid!=null) w.releasePointerCapture(pid); }catch(_){} pid=null; };
+  const end=function(){ if(!down) return; down=false; w.classList.remove('rsvp-grabbing'); w.style.userSelect=''; w.style.webkitUserSelect=''; try{ if(pid!=null) w.releasePointerCapture(pid); }catch(_){} pid=null; };
   w.addEventListener('pointerup',end);
   w.addEventListener('pointercancel',end);
   w.addEventListener('click',function(e){ if(moved){ e.stopPropagation(); e.preventDefault(); moved=false; } },true);
