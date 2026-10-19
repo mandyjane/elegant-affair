@@ -26519,15 +26519,9 @@ function _cloudToast(msg,isErr=false){
 // GUEST NAME AUTOCOMPLETE (reusable)
 // ══════════════════════════════════════════════
 function _guestNameList(){
-  // Returns array of display names from the guest list
+  // Returns sorted array of display names from ALL guests (any RSVP status)
   return (STATE.guests||[])
-    .map(g=>{
-      if(!g) return null;
-      const first=(g.firstName||'').trim();
-      const last=(g.lastName||'').trim();
-      if(!first && !last) return null;
-      return last ? first+' '+last : first;
-    })
+    .map(g=>{ if(!g) return null; const n=(g.name||'').trim(); return n||null; })
     .filter(Boolean)
     .sort((a,b)=>a.localeCompare(b));
 }
