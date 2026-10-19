@@ -2810,6 +2810,50 @@ body.dark .vlu-msgcomp .snd{color:var(--ink)}
   </div>
 </div>
 
+<!-- AUTH MODAL -->
+<div class="modal-overlay hidden" id="auth-modal-overlay" onclick="if(event.target===this)closeAuthModal()" style="z-index:2100">
+  <div class="modal" id="auth-modal-box" style="max-width:420px" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="auth-modal-title">Sign in to Elegant Affair</div>
+      <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+    </div>
+    <div class="modal-body" style="padding:20px 24px 24px">
+      <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px">
+        <button id="auth-tab-in" onclick="_authTab('in')" style="flex:1;background:none;border:none;border-bottom:2.5px solid var(--gold);padding:8px 0;font-size:13.5px;font-weight:500;color:var(--ink);cursor:pointer;transition:all .15s">Sign in</button>
+        <button id="auth-tab-up" onclick="_authTab('up')" style="flex:1;background:none;border:none;border-bottom:2.5px solid transparent;padding:8px 0;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s">Create account</button>
+      </div>
+      <div id="auth-form-in">
+        <div class="form-group" style="margin-bottom:14px">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="auth-in-email" placeholder="you@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')_authSignIn()"/>
+        </div>
+        <div class="form-group" style="margin-bottom:20px">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="auth-in-pw" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')_authSignIn()"/>
+        </div>
+        <div id="auth-in-err" style="color:#c0392b;font-size:12px;margin-bottom:10px;display:none"></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="_authSignIn()" id="auth-in-btn">Sign in</button>
+      </div>
+      <div id="auth-form-up" style="display:none">
+        <div class="form-group" style="margin-bottom:14px">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="auth-up-email" placeholder="you@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')_authSignUp()"/>
+        </div>
+        <div class="form-group" style="margin-bottom:14px">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="auth-up-pw" placeholder="At least 8 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')_authSignUp()"/>
+        </div>
+        <div class="form-group" style="margin-bottom:20px">
+          <label class="form-label">Confirm password</label>
+          <input class="form-input" type="password" id="auth-up-pw2" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')_authSignUp()"/>
+        </div>
+        <div id="auth-up-err" style="font-size:12px;margin-bottom:10px;display:none"></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="_authSignUp()" id="auth-up-btn">Create account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL -->
 <div class="modal-overlay hidden" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal" id="modal-box" onclick="event.stopPropagation()">
@@ -26322,13 +26366,161 @@ let _seatingPages=1;  // 1 = plan + list on one page (portrait); 2 = landscape f
 // editor always shows them, because that is where they are actually needed.
 let _seatingCounts=true;
 
+
+// ═══════════════════════════════════════
+// SUPABASE LIGHTWEIGHT CLIENT (inline)
+// ═══════════════════════════════════════
+const _SB_URL  = 'https://hzafdlfprtzfxtyaebmc.supabase.co';
+const _SB_KEY  = 'sb_publishable_hWMFKVxJTRH3UqcC9GN_WA_gJ2GNX5T';
+const _SB_SK   = 'ea_sb_session';
+let _sbSession = null;
+
+async function _sbAuthPost(path, payload){
+  const r = await fetch(_SB_URL+'/auth/v1'+path,{
+    method:'POST',
+    headers:{'apikey':_SB_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+  const ct=r.headers.get('content-type')||'';
+  const b = ct.includes('json') ? await r.json() : await r.text();
+  return {ok:r.ok,b};
+}
+function _sbPersist(s){
+  _sbSession=s;
+  try{ localStorage.setItem(_SB_SK,JSON.stringify(s)); }catch(_){}
+  _sbListeners.forEach(fn=>{ try{fn(s?s.user:null);}catch(_){} });
+}
+function _sbLoadSession(){
+  try{ const r=localStorage.getItem(_SB_SK); if(r){_sbSession=JSON.parse(r);return true;} }catch(_){}
+  return false;
+}
+const _sbListeners=[];
+function _sbOnAuthChange(fn){ _sbListeners.push(fn); }
+function _sbAuthHdr(){ return _sbSession?'Bearer '+_sbSession.access_token:'Bearer '+_SB_KEY; }
+
+async function _sbSignUp(email,pw){
+  const r=await _sbAuthPost('/signup',{email,password:pw});
+  if(!r.ok) return {error:r.b.msg||r.b.error_description||r.b.message||'Sign-up failed'};
+  return {ok:true};
+}
+async function _sbSignIn(email,pw){
+  const r=await _sbAuthPost('/token?grant_type=password',{email,password:pw});
+  if(!r.ok) return {error:r.b.error_description||r.b.msg||r.b.message||'Sign-in failed'};
+  const s={access_token:r.b.access_token,refresh_token:r.b.refresh_token,user:{id:r.b.user.id,email:r.b.user.email}};
+  _sbPersist(s); return {ok:true,user:s.user};
+}
+async function _sbSignOut(){
+  if(_sbSession){
+    try{ await fetch(_SB_URL+'/auth/v1/logout',{method:'POST',headers:{'apikey':_SB_KEY,'Authorization':_sbAuthHdr()}}); }catch(_){}
+  }
+  _sbPersist(null);
+  try{ localStorage.removeItem(_SB_SK); }catch(_){}
+}
+setInterval(async()=>{
+  if(!_sbSession||!_sbSession.refresh_token) return;
+  const r=await _sbAuthPost('/token?grant_type=refresh_token',{refresh_token:_sbSession.refresh_token});
+  if(r.ok) _sbPersist({access_token:r.b.access_token,refresh_token:r.b.refresh_token,user:{id:r.b.user.id,email:r.b.user.email}});
+},55*60*1000);
+
+async function _sbUpsert(table,rows){
+  const r=await fetch(`${_SB_URL}/rest/v1/${table}`,{
+    method:'POST',
+    headers:{'apikey':_SB_KEY,'Authorization':_sbAuthHdr(),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+    body:JSON.stringify(rows)
+  });
+  return r.ok;
+}
+async function _sbSelect(table,filter){
+  const r=await fetch(`${_SB_URL}/rest/v1/${table}?${filter}`,{
+    headers:{'apikey':_SB_KEY,'Authorization':_sbAuthHdr(),'Content-Type':'application/json'}
+  });
+  if(!r.ok) return null; return r.json();
+}
+
+// ── Cloud save / load ──────────────────────────────────────
+const _CS=['event','settings','guests','checklist','vendors','quotes',
+  'checklistCategories','checklistDrafts','checklistCatOrder',
+  'budget','tables','seating','inspo','visionboard','wishingwell',
+  'website','timeline','events','tagDefs','families',
+  'invites','inviteMeta','dashWidgetOrder','dashLayout','dashHiddenWidgets'];
+
+async function _cloudSave(){
+  if(!_sbSession) return {error:'Not signed in'};
+  const uid=_sbSession.user.id;
+  const pay={
+    event:STATE.event, settings:STATE.settings, guests:STATE.guests,
+    checklist:STATE.checklist, vendors:STATE.vendors||[], quotes:STATE.quotes||[],
+    checklistCategories:STATE.checklistCategories||[],
+    checklistDrafts:STATE.checklistDrafts||[],
+    checklistCatOrder:STATE.checklistCatOrder||[],
+    budget:STATE.budget, tables:STATE.tables, seating:STATE.seating,
+    inspo:STATE.inspo, visionboard:STATE.visionboard,
+    wishingwell:STATE.wishingwell, website:STATE.website,
+    timeline:STATE.timeline||[], events:STATE.events,
+    tagDefs:STATE.tagDefs||{}, families:STATE.families||[],
+    invites:STATE.invites||[], inviteMeta:STATE.inviteMeta||{},
+    dashWidgetOrder:STATE.dashWidgetOrder,
+    dashLayout:STATE.dashLayout, dashHiddenWidgets:STATE.dashHiddenWidgets
+  };
+  const rows=_CS.map(s=>({user_id:uid,section:s,data:pay[s]??{}}));
+  const ok=await _sbUpsert('planner_data',rows);
+  return ok?{ok:true}:{error:'Save failed — check your connection.'};
+}
+
+async function _cloudLoad(){
+  if(!_sbSession) return {error:'Not signed in'};
+  const uid=_sbSession.user.id;
+  const rows=await _sbSelect('planner_data',`user_id=eq.${uid}&select=section,data`);
+  if(!rows) return {error:'Load failed — check your connection.'};
+  if(!rows.length) return {ok:true,empty:true};
+  const saved={hasSetup:true};
+  rows.forEach(r=>{saved[r.section]=r.data;});
+  return {ok:true,saved};
+}
+
+let _cldSaving=false;
+async function cloudSaveClick(){
+  if(_cldSaving) return; _cldSaving=true;
+  const btn=document.getElementById('cloud-save-btn');
+  if(btn){btn.disabled=true;btn.innerHTML='Saving…';}
+  const r=await _cloudSave(); _cldSaving=false;
+  if(btn){btn.disabled=false;btn.innerHTML=_csvBtnHtml();}
+  _cloudToast(r.ok?'Saved to cloud ✓':(r.error||'Save failed'),!r.ok);
+}
+async function cloudLoadClick(){
+  const btn=document.getElementById('cloud-load-btn');
+  if(btn){btn.disabled=true;btn.innerHTML='Loading…';}
+  const r=await _cloudLoad();
+  if(btn){btn.disabled=false;btn.innerHTML=_cldBtnHtml();}
+  if(!r.ok){_cloudToast(r.error||'Load failed',true);return;}
+  if(r.empty){_cloudToast('No cloud data yet — save from this device first.');return;}
+  if(r.saved.event)    Object.assign(STATE.event,r.saved.event);
+  if(r.saved.settings) Object.assign(STATE.settings,r.saved.settings);
+  ['guests','checklist','vendors','quotes','checklistCategories','checklistDrafts','checklistCatOrder','tables','timeline','families','invites'].forEach(k=>{if(r.saved[k])STATE[k]=r.saved[k];});
+  ['budget','seating','inspo','visionboard','wishingwell','website','events','tagDefs','inviteMeta','dashWidgetOrder','dashLayout','dashHiddenWidgets'].forEach(k=>{if(r.saved[k])STATE[k]=r.saved[k];});
+  saveToStorage();
+  if(typeof updateTopbarSub==='function') updateTopbarSub();
+  navigate(_currentPage||'dashboard');
+  _cloudToast('Loaded from cloud ✓');
+}
+
+function _csvBtnHtml(){return'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Save to cloud';}
+function _cldBtnHtml(){return'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Load from cloud';}
+
+function _cloudToast(msg,isErr=false){
+  let t=document.getElementById('cloud-toast');
+  if(!t){t=document.createElement('div');t.id='cloud-toast';t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9000;background:var(--ink);color:var(--cream);padding:10px 18px;border-radius:20px;font-size:13px;pointer-events:none;opacity:0;transition:opacity .2s;white-space:nowrap;max-width:90vw;text-align:center';document.body.appendChild(t);}
+  t.textContent=msg; t.style.background=isErr?'#c0392b':'var(--ink)'; t.style.opacity='1';
+  clearTimeout(t._to); t._to=setTimeout(()=>{t.style.opacity='0';},3200);
+}
+
 // ── Build identity ───────────────────────────────────────────────────────────
 // Surfaced in Settings → About this build. This exists because the app is served as a
 // PWA with a service worker that deliberately serves a cached copy first, so an update
 // can land a launch late — and there was previously NO way to tell which build was
 // actually running. Diagnosing "I uploaded it but nothing changed" meant hunting for
 // whether a feature happened to appear. Bump this with every release.
-const APP_BUILD='v182';
+const APP_BUILD='v183';
 const APP_BUILD_DATE='2026-10-19';
 function _seatingPrintHtml(forPreview){
   const ev=STATE.event||{};
@@ -35897,6 +36089,10 @@ function renderSettings(c, actions){
       </div>
     </div>
     <div id="settings-no-results" style="display:none;font-size:13px;color:var(--muted);text-align:center;padding:8px 0">No settings match your search.</div>
+    <div class="settings-sect" data-sect="account cloud save load sync sign in sign out email password">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)">Account &amp; Cloud</div>
+      <div id="cloud-account-panel">${_cloudAccountHtml()}</div>
+    </div>
     <div class="settings-sect" data-sect="appearance dark mode vision board dashboard navigation sidebar hamburger icon theme">
       <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)">Appearance</div>
       <div class="dark-toggle-row" style="margin-bottom:16px">
@@ -40864,6 +41060,85 @@ function _confirm2CloseX(){
 }
 
 // ══════════════════════════════════════════════
+
+// ═══════════════════════════════════════
+// AUTH MODAL JS
+// ═══════════════════════════════════════
+function openAuthModal(tab){
+  _authTab(tab||'in');
+  document.getElementById('auth-modal-overlay').classList.remove('hidden');
+  setTimeout(()=>{const f=document.getElementById(tab==='up'?'auth-up-email':'auth-in-email');if(f)f.focus();},80);
+}
+function closeAuthModal(){
+  document.getElementById('auth-modal-overlay').classList.add('hidden');
+}
+function _authTab(t){
+  document.getElementById('auth-form-in').style.display=t==='in'?'':'none';
+  document.getElementById('auth-form-up').style.display=t==='up'?'':'none';
+  document.getElementById('auth-tab-in').style.borderBottomColor=t==='in'?'var(--gold)':'transparent';
+  document.getElementById('auth-tab-up').style.borderBottomColor=t==='up'?'var(--gold)':'transparent';
+  document.getElementById('auth-tab-in').style.color=t==='in'?'var(--ink)':'var(--muted)';
+  document.getElementById('auth-tab-up').style.color=t==='up'?'var(--ink)':'var(--muted)';
+  document.getElementById('auth-modal-title').textContent=t==='up'?'Create your account':'Sign in to Elegant Affair';
+}
+async function _authSignIn(){
+  const email=(document.getElementById('auth-in-email').value||'').trim();
+  const pw=document.getElementById('auth-in-pw').value||'';
+  const errEl=document.getElementById('auth-in-err');
+  const btn=document.getElementById('auth-in-btn');
+  errEl.style.display='none';
+  if(!email||!pw){errEl.textContent='Please enter your email and password.';errEl.style.display='';return;}
+  btn.disabled=true;btn.textContent='Signing in…';
+  const r=await _sbSignIn(email,pw);
+  btn.disabled=false;btn.textContent='Sign in';
+  if(!r.ok){errEl.textContent=r.error;errEl.style.display='';return;}
+  closeAuthModal();
+  if(typeof _currentPage!=='undefined'&&_currentPage==='settings') navigate('settings');
+  _cloudToast('Signed in as '+r.user.email);
+}
+async function _authSignUp(){
+  const email=(document.getElementById('auth-up-email').value||'').trim();
+  const pw=document.getElementById('auth-up-pw').value||'';
+  const pw2=document.getElementById('auth-up-pw2').value||'';
+  const errEl=document.getElementById('auth-up-err');
+  const btn=document.getElementById('auth-up-btn');
+  errEl.style.display='none';errEl.style.color='#c0392b';
+  if(!email||!pw){errEl.textContent='Please fill in all fields.';errEl.style.display='';return;}
+  if(pw.length<8){errEl.textContent='Password must be at least 8 characters.';errEl.style.display='';return;}
+  if(pw!==pw2){errEl.textContent="Passwords don't match.";errEl.style.display='';return;}
+  btn.disabled=true;btn.textContent='Creating account…';
+  const r=await _sbSignUp(email,pw);
+  btn.disabled=false;btn.textContent='Create account';
+  if(!r.ok){errEl.textContent=r.error;errEl.style.display='';return;}
+  errEl.style.color='var(--gold-deep,#7d5c1b)';
+  errEl.textContent='✓ Account created! Check your email to verify, then sign in.';
+  errEl.style.display='';
+  btn.disabled=true;
+}
+async function cloudSignOut(){
+  await _sbSignOut();
+  if(typeof _currentPage!=='undefined'&&_currentPage==='settings') navigate('settings');
+  _cloudToast('Signed out.');
+}
+
+function _cloudAccountHtml(){
+  const user=_sbSession?_sbSession.user:null;
+  if(!user) return '<p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.5">Create an account or sign in to save your planner to the cloud and access it from any device.</p>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
+    +'<button class="btn btn-primary btn-sm" onclick="openAuthModal('in')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Sign in</button>'
+    +'<button class="btn btn-outline btn-sm" onclick="openAuthModal('up')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Create account</button></div>';
+
+  return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:.5px solid var(--border);border-radius:10px">'
+    +'<div style="width:36px;height:36px;border-radius:50%;background:var(--parchment);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep,#7d5c1b)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>'
+    +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+user.email+'</div><div style="font-size:11px;color:var(--muted)">Signed in</div></div>'
+    +'<button class="btn btn-ghost btn-sm" onclick="cloudSignOut()" style="color:var(--muted);font-size:12px;white-space:nowrap">Sign out</button></div>'
+    +'<p style="font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.5">Save your planner to the cloud, then load it on any device. Photos sync separately (coming soon).</p>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
+    +'<button class="btn btn-primary btn-sm" id="cloud-save-btn" onclick="cloudSaveClick()" style="display:inline-flex;align-items:center;gap:5px">'+_csvBtnHtml()+'</button>'
+    +'<button class="btn btn-outline btn-sm" id="cloud-load-btn" onclick="cloudLoadClick()" style="display:inline-flex;align-items:center;gap:5px">'+_cldBtnHtml()+'</button></div>'
+    +'<p style="font-size:11px;color:var(--muted);margin:10px 0 0;line-height:1.4"><b>Save to cloud</b> — uploads your current planner.<br><b>Load from cloud</b> — replaces this device's data with the cloud version.</p>';
+}
+
 // PERSISTENCE (localStorage)
 // ══════════════════════════════════════════════
 const STORAGE_KEY = 'eternal_wedding_v2';
@@ -41762,6 +42037,9 @@ window.addEventListener('beforeunload', saveToStorage);
 // Periodic autosave every 30 seconds
 setInterval(saveToStorage, 30000);
 
+// Refresh Settings panel on auth state change
+_sbOnAuthChange(function(){ if(typeof _currentPage!=='undefined'&&_currentPage==='settings') navigate('settings'); });
+
 // Load persisted data before first render
 const alreadySetUp = loadFromStorage();
 
@@ -41786,6 +42064,7 @@ try{ if(_autoCheckPassedInstallments()) saveToStorage(); }catch(e){}
    — the planner works, images just show as missing rather than the whole app
    refusing to load. */
 (async function boot(){
+  _sbLoadSession();
   try{
     await _mediaLoadAll();
     await _mediaMigrate();
