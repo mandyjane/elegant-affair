@@ -33930,7 +33930,7 @@ function _wwRowHtml(x){
   const thankBtn = thanked
     ? `<button onclick="toggleWwThanked('${x.id}')" title="Thanked — click to undo" aria-label="Thanked" style="background:none;border:none;cursor:pointer;color:var(--green,#5C8A4E);display:inline-flex;padding:4px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>`
     : `<button onclick="toggleWwThanked('${x.id}')" title="Mark thank-you sent" aria-label="Thank-you pending" style="background:none;border:none;cursor:pointer;color:var(--gold-deep);display:inline-flex;padding:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>`;
-  const addr = (x.address||'').trim() || ((STATE.guests||[]).find(g=>(g.name||'').trim()===(x.name||'').trim())||{}).address || '';
+  const addr = (x.address||'').trim() || ((STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===(x.name||'').trim().toLowerCase())||{}).address || '';
   const noteLine = x.note?`<span style="display:block;font-size:11px;color:var(--muted);font-style:italic;margin-top:2px">"${_wwEsc(x.note)}”</span>`:'';
   const addrLine = addr
     ? `<span style="display:block;font-size:11px;color:var(--muted);margin-top:3px"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${_wwEsc(addr)}</span>`
@@ -34325,7 +34325,7 @@ function openWwContribution(id){
       // Helper: fill address from guest list if addr field is blank
       const _tryFillAddr=(name)=>{
         if((addrInp.value||'').trim()) return; // already has an address
-        const match=(STATE.guests||[]).find(g=>(g.name||'').trim()===name.trim());
+        const match=(STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===name.trim().toLowerCase());
         if(match&&match.address){
           addrInp.value=match.address;
           if(addrHint) addrHint.style.display='block';
