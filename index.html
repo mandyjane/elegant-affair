@@ -33856,6 +33856,21 @@ async function _wbDownload(){
 }
 
 function renderWishingWell(c, actions){
+  // Silently backfill missing addresses from guest list on every WW render
+  // Safe to run repeatedly — only modifies contributions that have no stored address
+  let _backfilled = false;
+  (STATE.wishingwell.contributions||[]).forEach(contrib=>{
+    if((contrib.address||'').trim()) return; // already has an address stored
+    const guest=(STATE.guests||[]).find(g=>
+      (g.name||'').trim().toLowerCase()===(contrib.name||'').trim().toLowerCase()
+    );
+    if(guest&&(guest.address||'').trim()){
+      contrib.address = guest.address.trim();
+      _backfilled = true;
+    }
+  });
+  if(_backfilled) saveToStorage();
+
   const ww = STATE.wishingwell;
   const total = _wwTotal();
   const goal = Number(ww.goal)||0;
@@ -34335,12 +34350,14 @@ function openWwContribution(id){
       // or a new contribution with a name already populated, pre-fill immediately
       const currentName=(nameInp.value||'').trim();
       if(currentName) _tryFillAddr(currentName);
-      // When a name is picked from autocomplete
-      nameInp.addEventListener('change',()=>{
+      // When a name is picked from autocomplete (fires 'change') or typed manually
+      const _onNameChange=()=>{
         const picked=(nameInp.value||'').trim();
         if(!picked) return;
         _tryFillAddr(picked);
-      });
+      };
+      nameInp.addEventListener('change', _onNameChange);
+      nameInp.addEventListener('input', _onNameChange);
       // Hide hint if user edits address manually
       addrInp.addEventListener('input',()=>{ if(addrHint) addrHint.style.display='none'; });
     }
