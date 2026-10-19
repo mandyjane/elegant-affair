@@ -26519,11 +26519,34 @@ function _cloudToast(msg,isErr=false){
 // GUEST NAME AUTOCOMPLETE (reusable)
 // ══════════════════════════════════════════════
 function _guestNameList(){
-  // Returns sorted array of display names from ALL guests (any RSVP status)
-  return (STATE.guests||[])
-    .map(g=>{ if(!g) return null; const n=(g.name||'').trim(); return n||null; })
-    .filter(Boolean)
-    .sort((a,b)=>a.localeCompare(b));
+  // Returns sorted array of names: individual guests, couples, and families/households
+  const names=new Set();
+
+  // Individual guests
+  (STATE.guests||[]).forEach(g=>{
+    if(!g) return;
+    const n=(g.name||'').trim();
+    if(n) names.add(n);
+  });
+
+  // Couples — "Name1 & Name2" (deduplicated: only add for the lower-id guest)
+  (STATE.guests||[]).forEach(g=>{
+    if(!g||!g.coupleId) return;
+    const partner=(STATE.guests||[]).find(x=>x.id===g.coupleId);
+    if(!partner) return;
+    if(g.id < g.coupleId){
+      const n=coupleDisplayName(g.name,partner.name);
+      if(n) names.add(n);
+    }
+  });
+
+  // Families / households
+  (STATE.families||[]).forEach(f=>{
+    const n=(f.name||'').trim();
+    if(n) names.add(n);
+  });
+
+  return [...names].sort((a,b)=>a.localeCompare(b));
 }
 
 function _nameAutocomplete(inputId){
