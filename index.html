@@ -33858,16 +33858,37 @@ async function _wbDownload(){
 function renderWishingWell(c, actions){
   // Silently backfill missing addresses from guest list on every WW render
   // Safe to run repeatedly — only modifies contributions that have no stored address
+  const _wwResolveAddr=(name)=>{
+    const nl=name.trim().toLowerCase();
+    // 1. Direct individual match
+    const direct=(STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===nl);
+    if(direct&&(direct.address||'').trim()) return direct.address.trim();
+    // 2. Couple / +1 pair name (contains ' & ') — match either member of the couple
+    if(nl.includes(' & ')){
+      const parts=nl.split(' & ').map(s=>s.trim());
+      for(const g of (STATE.guests||[])){
+        const gn=(g.name||'').trim().toLowerCase();
+        if(parts.some(p=>gn.startsWith(p)||gn===p||(g.coupleId||g.plusOneId))){
+          if((g.address||'').trim()) return g.address.trim();
+          // check couple partner address
+          const partnerId=g.coupleId||g.plusOneId;
+          if(partnerId){
+            const partner=(STATE.guests||[]).find(x=>x.id===partnerId);
+            if(partner&&(partner.address||'').trim()) return partner.address.trim();
+          }
+        }
+      }
+    }
+    // 3. Family/household
+    const fam=(STATE.families||[]).find(f=>(f.name||'').trim().toLowerCase()===nl);
+    if(fam&&(fam.address||'').trim()) return fam.address.trim();
+    return '';
+  };
   let _backfilled = false;
   (STATE.wishingwell.contributions||[]).forEach(contrib=>{
     if((contrib.address||'').trim()) return; // already has an address stored
-    const guest=(STATE.guests||[]).find(g=>
-      (g.name||'').trim().toLowerCase()===(contrib.name||'').trim().toLowerCase()
-    );
-    if(guest&&(guest.address||'').trim()){
-      contrib.address = guest.address.trim();
-      _backfilled = true;
-    }
+    const resolved=_wwResolveAddr((contrib.name||'').trim());
+    if(resolved){ contrib.address=resolved; _backfilled=true; }
   });
   if(_backfilled) saveToStorage();
 
@@ -33945,7 +33966,27 @@ function _wwRowHtml(x){
   const thankBtn = thanked
     ? `<button onclick="toggleWwThanked('${x.id}')" title="Thanked — click to undo" aria-label="Thanked" style="background:none;border:none;cursor:pointer;color:var(--green,#5C8A4E);display:inline-flex;padding:4px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>`
     : `<button onclick="toggleWwThanked('${x.id}')" title="Mark thank-you sent" aria-label="Thank-you pending" style="background:none;border:none;cursor:pointer;color:var(--gold-deep);display:inline-flex;padding:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>`;
-  const addr = (x.address||'').trim() || ((STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===(x.name||'').trim().toLowerCase())||{}).address || '';
+  const _resolveContribAddr=(x)=>{
+    if((x.address||'').trim()) return x.address.trim();
+    const nl=(x.name||'').trim().toLowerCase();
+    const direct=(STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===nl);
+    if(direct&&(direct.address||'').trim()) return direct.address.trim();
+    if(nl.includes(' & ')){
+      const parts=nl.split(' & ').map(s=>s.trim());
+      for(const g of (STATE.guests||[])){
+        const gn=(g.name||'').trim().toLowerCase();
+        if(parts.some(p=>gn.startsWith(p)||gn===p)){
+          if((g.address||'').trim()) return g.address.trim();
+          const pid=g.coupleId||g.plusOneId;
+          if(pid){const prt=(STATE.guests||[]).find(q=>q.id===pid);if(prt&&(prt.address||'').trim())return prt.address.trim();}
+        }
+      }
+    }
+    const fam=(STATE.families||[]).find(f=>(f.name||'').trim().toLowerCase()===nl);
+    if(fam&&(fam.address||'').trim()) return fam.address.trim();
+    return '';
+  };
+  const addr=_resolveContribAddr(x);
   const noteLine = x.note?`<span style="display:block;font-size:11px;color:var(--muted);font-style:italic;margin-top:2px">"${_wwEsc(x.note)}”</span>`:'';
   const addrLine = addr
     ? `<span style="display:block;font-size:11px;color:var(--muted);margin-top:3px"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${_wwEsc(addr)}</span>`
@@ -34340,11 +34381,32 @@ function openWwContribution(id){
       // Helper: fill address from guest list if addr field is blank
       const _tryFillAddr=(name)=>{
         if((addrInp.value||'').trim()) return; // already has an address
-        const match=(STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===name.trim().toLowerCase());
-        if(match&&match.address){
-          addrInp.value=match.address;
-          if(addrHint) addrHint.style.display='block';
+        const nl=name.trim().toLowerCase();
+        let addr='';
+        // 1. Direct individual match
+        const direct=(STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===nl);
+        if(direct&&(direct.address||'').trim()) addr=direct.address.trim();
+        // 2. Couple / +1 pair name (contains ' & ') — match either member
+        if(!addr&&nl.includes(' & ')){
+          const parts=nl.split(' & ').map(s=>s.trim());
+          for(const g of (STATE.guests||[])){
+            const gn=(g.name||'').trim().toLowerCase();
+            if(parts.some(p=>gn.startsWith(p)||gn===p)){
+              if((g.address||'').trim()){ addr=g.address.trim(); break; }
+              const partnerId=g.coupleId||g.plusOneId;
+              if(partnerId){
+                const partner=(STATE.guests||[]).find(x=>x.id===partnerId);
+                if(partner&&(partner.address||'').trim()){ addr=partner.address.trim(); break; }
+              }
+            }
+          }
         }
+        // 3. Family/household
+        if(!addr){
+          const fam=(STATE.families||[]).find(f=>(f.name||'').trim().toLowerCase()===nl);
+          if(fam&&(fam.address||'').trim()) addr=fam.address.trim();
+        }
+        if(addr){ addrInp.value=addr; if(addrHint) addrHint.style.display='block'; }
       };
       // On open: if editing an existing contribution whose address is blank,
       // or a new contribution with a name already populated, pre-fill immediately
