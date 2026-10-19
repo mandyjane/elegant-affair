@@ -33863,19 +33863,32 @@ function renderWishingWell(c, actions){
     // 1. Direct individual match
     const direct=(STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===nl);
     if(direct&&(direct.address||'').trim()) return direct.address.trim();
-    // 2. Couple / +1 pair name (contains ' & ') — match either member of the couple
+    // 2. Couple / pair — reconstruct compound name the same way _guestNameList does
     if(nl.includes(' & ')){
-      const parts=nl.split(' & ').map(s=>s.trim());
-      for(const g of (STATE.guests||[])){
-        const gn=(g.name||'').trim().toLowerCase();
-        if(parts.some(p=>gn.startsWith(p)||gn===p||(g.coupleId||g.plusOneId))){
-          if((g.address||'').trim()) return g.address.trim();
-          // check couple partner address
-          const partnerId=g.coupleId||g.plusOneId;
-          if(partnerId){
-            const partner=(STATE.guests||[]).find(x=>x.id===partnerId);
-            if(partner&&(partner.address||'').trim()) return partner.address.trim();
-          }
+      const guests=STATE.guests||[];
+      for(const g of guests){
+        if(!g.coupleId&&!g.plusOneId) continue;
+        const partnerId=g.coupleId||g.plusOneId;
+        const partner=guests.find(q=>q.id===partnerId);
+        if(!partner) continue;
+        if(g.id>=partnerId) continue;
+        const n1=(g.name||'').trim(), n2=(partner.name||'').trim();
+        if(!n1||!n2) continue;
+        const w1=n1.split(/\s+/), w2=n2.split(/\s+/);
+        const minLen=Math.min(w1.length,w2.length);
+        let suffixLen=0;
+        for(let s=1;s<minLen;s++){
+          if(w1.slice(-s).join(' ').toLowerCase()===w2.slice(-s).join(' ').toLowerCase()) suffixLen=s;
+        }
+        let coupleName;
+        if(suffixLen>0){
+          coupleName=(w1.slice(0,-suffixLen).join(' ')+' & '+w2.slice(0,-suffixLen).join(' ')+' '+w1.slice(-suffixLen).join(' ')).trim();
+        } else {
+          coupleName=(n1+' & '+n2).trim();
+        }
+        if(coupleName.toLowerCase()===nl){
+          const addr=(g.address||'').trim()||(partner.address||'').trim();
+          if(addr) return addr;
         }
       }
     }
@@ -33969,19 +33982,41 @@ function _wwRowHtml(x){
   const _resolveContribAddr=(x)=>{
     if((x.address||'').trim()) return x.address.trim();
     const nl=(x.name||'').trim().toLowerCase();
+    // 1. Direct individual match
     const direct=(STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===nl);
     if(direct&&(direct.address||'').trim()) return direct.address.trim();
+    // 2. Couple / pair — reconstruct the compound name and compare exactly
     if(nl.includes(' & ')){
-      const parts=nl.split(' & ').map(s=>s.trim());
-      for(const g of (STATE.guests||[])){
-        const gn=(g.name||'').trim().toLowerCase();
-        if(parts.some(p=>gn.startsWith(p)||gn===p)){
-          if((g.address||'').trim()) return g.address.trim();
-          const pid=g.coupleId||g.plusOneId;
-          if(pid){const prt=(STATE.guests||[]).find(q=>q.id===pid);if(prt&&(prt.address||'').trim())return prt.address.trim();}
+      const guests=STATE.guests||[];
+      for(const g of guests){
+        if(!g.coupleId&&!g.plusOneId) continue;
+        const partnerId=g.coupleId||g.plusOneId;
+        const partner=guests.find(q=>q.id===partnerId);
+        if(!partner) continue;
+        // Only process the pair once (lower id wins)
+        if(g.id>=partnerId) continue;
+        // Reconstruct the compound name the same way _guestNameList does
+        const n1=(g.name||'').trim(), n2=(partner.name||'').trim();
+        if(!n1||!n2) continue;
+        const w1=n1.split(/\s+/), w2=n2.split(/\s+/);
+        const minLen=Math.min(w1.length,w2.length);
+        let suffixLen=0;
+        for(let s=1;s<minLen;s++){
+          if(w1.slice(-s).join(' ').toLowerCase()===w2.slice(-s).join(' ').toLowerCase()) suffixLen=s;
+        }
+        let coupleName;
+        if(suffixLen>0){
+          coupleName=(w1.slice(0,-suffixLen).join(' ')+' & '+w2.slice(0,-suffixLen).join(' ')+' '+w1.slice(-suffixLen).join(' ')).trim();
+        } else {
+          coupleName=(n1+' & '+n2).trim();
+        }
+        if(coupleName.toLowerCase()===nl){
+          const addr=(g.address||'').trim()||(partner.address||'').trim();
+          if(addr) return addr;
         }
       }
     }
+    // 3. Family/household exact match
     const fam=(STATE.families||[]).find(f=>(f.name||'').trim().toLowerCase()===nl);
     if(fam&&(fam.address||'').trim()) return fam.address.trim();
     return '';
@@ -34386,18 +34421,32 @@ function openWwContribution(id){
         // 1. Direct individual match
         const direct=(STATE.guests||[]).find(g=>(g.name||'').trim().toLowerCase()===nl);
         if(direct&&(direct.address||'').trim()) addr=direct.address.trim();
-        // 2. Couple / +1 pair name (contains ' & ') — match either member
+        // 2. Couple / pair — reconstruct compound name the same way _guestNameList does
         if(!addr&&nl.includes(' & ')){
-          const parts=nl.split(' & ').map(s=>s.trim());
-          for(const g of (STATE.guests||[])){
-            const gn=(g.name||'').trim().toLowerCase();
-            if(parts.some(p=>gn.startsWith(p)||gn===p)){
-              if((g.address||'').trim()){ addr=g.address.trim(); break; }
-              const partnerId=g.coupleId||g.plusOneId;
-              if(partnerId){
-                const partner=(STATE.guests||[]).find(x=>x.id===partnerId);
-                if(partner&&(partner.address||'').trim()){ addr=partner.address.trim(); break; }
-              }
+          const guests=STATE.guests||[];
+          for(const g of guests){
+            if(!g.coupleId&&!g.plusOneId) continue;
+            const partnerId=g.coupleId||g.plusOneId;
+            const partner=guests.find(q=>q.id===partnerId);
+            if(!partner) continue;
+            if(g.id>=partnerId) continue;
+            const n1=(g.name||'').trim(), n2=(partner.name||'').trim();
+            if(!n1||!n2) continue;
+            const w1=n1.split(/\s+/), w2=n2.split(/\s+/);
+            const minLen=Math.min(w1.length,w2.length);
+            let suffixLen=0;
+            for(let s=1;s<minLen;s++){
+              if(w1.slice(-s).join(' ').toLowerCase()===w2.slice(-s).join(' ').toLowerCase()) suffixLen=s;
+            }
+            let coupleName;
+            if(suffixLen>0){
+              coupleName=(w1.slice(0,-suffixLen).join(' ')+' & '+w2.slice(0,-suffixLen).join(' ')+' '+w1.slice(-suffixLen).join(' ')).trim();
+            } else {
+              coupleName=(n1+' & '+n2).trim();
+            }
+            if(coupleName.toLowerCase()===nl){
+              addr=(g.address||'').trim()||(partner.address||'').trim();
+              if(addr) break;
             }
           }
         }
