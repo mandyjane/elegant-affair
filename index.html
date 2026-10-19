@@ -528,6 +528,10 @@ body.dark .vpt-kind-bal{background:rgba(214,128,179,.16);color:#e7a6cd}
 .bpl-row > button{order:6}
 /* Tags */
 body.dark .tag{background:#212229;color:#B0A085}
+body.dark .tag.diet-tag-al,body.dark .tag.gt-chip-guest.diet-tag-al{background:rgba(194,112,112,.16)!important;color:#E08080!important}
+body.dark .diet-ico-al,body.dark .diet-txt-al{color:#E08080!important}
+body.dark .al-chip{background:var(--surface);color:var(--muted)}
+body.dark .al-chip.on{background:rgba(196,168,130,.15);color:#C3B69E;box-shadow:inset 0 0 0 .5px #B0A085}
 /* Seat chips */
 body.dark .seat-chip{background:#212229;border-color:#2E2D33;color:#D2CEC6}
 /* Check items */
@@ -1120,6 +1124,8 @@ body.dark .sel-chevron{background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .modal-body{padding:12px 28px 28px;display:flex;flex-direction:column;gap:16px}
 .modal-footer{padding:0 28px 24px;display:flex;gap:10px;justify-content:flex-end}
 .modal-footer:empty{padding:0}
+.bi-stack-paid{white-space:nowrap}
+@media (max-width:560px){.bi-stack-paid{white-space:normal;max-width:120px;line-height:1.3}}
 .modal.seat-mgr-compact .modal-header{padding:14px 22px 0}
 .modal.seat-mgr-compact .modal-title{font-size:18px}
 .modal.seat-mgr-compact .modal-body{padding:8px 22px 14px;gap:8px}
@@ -1539,6 +1545,8 @@ body.dark .budget-item.bg-gentle > .bi-head{background:#1E1E23}
   /* Ring (style 4): keep the single-line layout; just trim the gap a touch more. */
   .bsum-ring{gap:6px!important}
 }
+.bsum-b{display:block}.bsum-a{display:none}
+@media (max-width:560px){.bsum-a{display:block}.bsum-b{display:none}}
 body.dark .bi-icon{stroke:#B0A085 !important}
 .bi-head:has(.dots-menu-cols){align-items:stretch}
 .dots-menu-cols{align-self:stretch;justify-content:flex-start}
@@ -1925,6 +1933,18 @@ body.dark .db-hero{background:#202127;border-color:#2E2D33}
 
 /* TAGS */
 .tag{display:inline-flex;align-items:center;padding:2px 9px;background:var(--parchment);border-radius:12px;font-size:11.5px;color:var(--gold-deep);font-weight:500;gap:4px}
+/* Allergy (v177): the app's warning red, so an allergy never reads as a preference. Class + body.dark override, never inline rgba. */
+.tag.diet-tag-al,.tag.gt-chip-guest.diet-tag-al{background:rgba(192,57,43,.10)!important;color:#A8322A!important;max-width:240px;white-space:normal!important;line-height:1.35}
+.diet-ico-al{color:#A8322A!important}
+.diet-txt-al{color:#A8322A;font-weight:500}
+.al-wrap{margin-top:12px;padding:10px 12px;border-radius:9px;background:var(--surface);border:.5px solid var(--border)}
+.al-wrap .al-lbl{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:7px;display:block}
+.al-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.al-chip{display:inline-flex;align-items:center;padding:4px 10px;border:none;border-radius:5px;background:var(--cream);font-family:'Inter',sans-serif;font-size:11.5px;color:var(--muted);cursor:pointer;box-shadow:inset 0 0 0 .5px var(--border);line-height:1.4}
+.al-chip:hover{color:var(--ink)}
+.al-chip.on{background:#F3EFE9;color:#7A6230;box-shadow:inset 0 0 0 .5px var(--gold)}
+.al-hint{font-size:11px;color:var(--muted);margin-top:5px}
+@media (pointer:coarse){.al-chip{padding:6px 11px;font-size:12.5px}}
 
 /* DRAG */
 .drag-handle{cursor:grab;color:var(--muted);padding:0 4px;font-size:16px;opacity:0;transition:opacity .15s;line-height:1}
@@ -2163,6 +2183,35 @@ body.dark .cal-add-menu{box-shadow:0 4px 24px rgba(0,0,0,.5)}
   .cal-list-time{flex-basis:50px}
 }
 @media(max-width:600px){ .dash-export-label{display:none} .dash-edit-label{display:none} }
+/* ── v179 linked items: toast tick, sheet rows, add-to-budget chip, mode cards ── */
+.undo-toast .ut-ico.ok{background:rgba(74,124,89,.14);color:var(--green)}
+body.dark .undo-toast .ut-ico.ok{background:rgba(92,143,114,.2);color:var(--green)}
+.undo-toast.lk-toast .ut-msg{white-space:normal;overflow:visible;text-overflow:clip;max-width:min(58vw,300px);line-height:1.35}
+.lk-sheet{display:flex;flex-direction:column}
+.lk-intro{font-size:12.5px;color:var(--muted);margin:0 0 6px}
+.lk-lbl{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.lk-opt{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border);cursor:pointer}
+.lk-sheet>.lk-opt:first-child,.lk-intro+.lk-opt,.lk-lbl+.lk-opt,.lk-sep+.lk-opt{border-top:none}
+.lk-opt input[type=checkbox],.lk-opt input[type=radio]{width:16px;height:16px;accent-color:var(--gold-deep);margin-top:2px;flex-shrink:0}
+.lk-ot{font-size:13px;font-weight:500;color:var(--ink)}
+.lk-os{font-size:11.5px;color:var(--muted)}
+.lk-date{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11.5px;color:var(--muted)}
+.lk-date input{font:inherit;font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:7px;background:var(--cream);color:var(--ink)}
+.lk-sep{height:1px;background:var(--border);margin:6px 0}
+.lk-chip{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:2px 10px;border-radius:12px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;border:1px dashed var(--gold);background:transparent;color:var(--gold-deep);cursor:pointer}
+.lk-chip:hover{background:var(--surface)}
+.lk-mode-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.lk-mode-opt{display:flex;flex-direction:column;justify-content:flex-start;padding:12px 14px;border-radius:10px;border:2px solid var(--border);background:transparent;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;color:var(--ink)}
+.lk-mode-opt .lk-mn{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.lk-mode-opt .lk-mt{font-size:13px;font-weight:600;margin:2px 0 4px;color:var(--ink)}
+.lk-mode-opt .lk-md{font-size:11.5px;color:var(--muted);line-height:1.45}
+.lk-mode-opt.sel{border-color:var(--gold);background:#E8E0D5}
+.lk-mode-opt.sel .lk-mt{color:var(--gold-deep)}
+body.dark .lk-mode-opt{border-color:#45434B}
+body.dark .lk-mode-opt.sel{background:#222329;border-color:var(--gold)}
+body.dark .lk-mode-opt.sel .lk-mt{color:var(--gold)}
+@media (max-width:560px){.lk-mode-opts{grid-template-columns:1fr}}
+
 /* ── Undo-delete toast ── */
 #undo-toast-wrap{position:fixed;right:18px;bottom:18px;z-index:4000;display:flex;flex-direction:column;gap:8px;align-items:flex-end;pointer-events:none}
 .undo-toast{pointer-events:auto;display:inline-flex;align-items:center;gap:9px;border-radius:11px;padding:7px 10px 7px 9px;background:var(--cream);border:1px solid var(--border);box-shadow:0 5px 22px rgba(0,0,0,.15);max-width:min(86vw,440px);opacity:0;transform:translateY(8px);transition:opacity .22s ease,transform .22s ease}
@@ -3281,15 +3330,90 @@ function coupleDisplayName(name1, name2){
   return `${name1} &amp; ${second(name2)}`;
 }
 
+/* ── Dietary vocabulary (v177) — the ONE list. Allergy is a dietary key like the others;
+   WHAT they're allergic to lives beside it on the guest: `g.allergens` (keys from ALLERGENS,
+   Australia's common allergens, so the RSVP summary can count them for the caterer) and
+   `g.allergyNote` (anything else, kept exactly as typed). Unticking Allergy keeps both, so an
+   accidental untick loses nothing; every reader shows them only while 'allergy' is ticked. */
+const DIET_KEYS=['vegetarian','vegan','lactose','gluten','allergy','other'];
+const DIET_LABELS={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose',gluten:'Gluten',allergy:'Allergy',other:'Other'};
+const ALLERGENS=[['peanuts','Peanuts'],['treenuts','Tree nuts'],['shellfish','Shellfish'],['fish','Fish'],['eggs','Eggs'],['milk','Milk'],['sesame','Sesame'],['soy','Soy'],['wheat','Wheat']];
+/* The muted one-line summary on guest cards keeps its existing lower-case keys; only the
+   allergy segment changes — it carries its detail and is red so it doesn't hide in the line. */
+function _dietRawHtml(g){
+  return (g&&g.dietary||[]).map(d=>d==='allergy'
+    ? `<span class="diet-txt-al">${_escHtml(_dietWord(g,d,'paren').replace(/^Allergy/,'allergy'))}</span>`
+    : d==='other' ? _escHtml(_dietWord(g,d,'paren').replace(/^Other/,'other'))
+    : _escHtml(d)).join(', ');
+}
+function _allergenLabel(k){ const a=ALLERGENS.find(x=>x[0]===k); return a?a[1]:String(k||''); }
+function _hasAllergy(g){ return !!(g && Array.isArray(g.dietary) && g.dietary.includes('allergy')); }
+/* "Peanuts, Tree nuts, kiwi fruit" — chips first, then the typed note. '' when unspecified. */
+function _allergyText(g){
+  if(!g) return '';
+  const a=(Array.isArray(g.allergens)?g.allergens:[]).map(_allergenLabel).filter(Boolean);
+  const n=String(g.allergyNote||'').trim(); if(n) a.push(n);
+  return a.join(', ');
+}
+/* What "Other" means for this guest — '' when unspecified. Shown only while Other is ticked. */
+function _otherText(g){ return String(g&&g.dietOther||'').trim(); }
+/* One dietary entry as words. Allergy and Other carry their detail:
+   "Allergy · Peanuts" / "Allergy (Peanuts)", "Other · Halal" / "Other (Halal)". */
+function _dietWord(g,d,sep){
+  const t = d==='allergy' ? _allergyText(g) : d==='other' ? _otherText(g) : '';
+  const L = DIET_LABELS[d]||String(d);
+  return t ? (sep==='paren' ? L+' ('+t+')' : L+' · '+t) : L;
+}
+/* Free-typed diet words (CSV import, and older imported guests) → the app's keys.
+   Recognised words become their tick-box; allergy mentions become Allergy + detail;
+   anything else becomes Other with the words kept verbatim as its detail — so every
+   entry lands on a tick-box, an icon and a count, and nothing typed is lost.
+   Conservative on purpose: "dairy free" could be lactose or a milk allergy, so it stays
+   as Other's words rather than being guessed into either. */
+const _DIET_SYNONYMS={vegetarian:'vegetarian',veg:'vegetarian',veggie:'vegetarian',vego:'vegetarian',
+  vegan:'vegan',lactose:'lactose','lactose free':'lactose','lactose intolerant':'lactose','lactose intolerance':'lactose',
+  gluten:'gluten','gluten free':'gluten','gluten intolerant':'gluten','gluten intolerance':'gluten',coeliac:'gluten',celiac:'gluten',
+  allergy:'allergy',other:'other'};
+function _normaliseDiet(entries){
+  const dietary=[], al=[], oth=[];
+  const add=k=>{ if(!dietary.includes(k)) dietary.push(k); };
+  const strip=t=>t.replace(/\b(severe|mild|allergies|allergy|allergic|anaphylactic|anaphylaxis)\b|\bto\b|[:()]/gi,' ').replace(/\s+/g,' ').trim();
+  (entries||[]).map(x=>String(x||'').trim()).filter(Boolean).forEach(t=>{
+    const key=t.toLowerCase().replace(/[-_]/g,' ').replace(/\s+/g,' ').trim();
+    if(_DIET_SYNONYMS[key]){ add(_DIET_SYNONYMS[key]); return; }
+    if(/allerg|anaphyla/i.test(t)){ const d=strip(t); if(d) al.push(d); add('allergy'); return; }
+    oth.push(t); add('other');
+  });
+  const r=_parseAllergyText(al.join(', '));
+  // Keep the app's own tick-box order.
+  dietary.sort((a,b)=>DIET_KEYS.indexOf(a)-DIET_KEYS.indexOf(b));
+  return {dietary, allergens:r.allergens, allergyNote:r.note, dietOther:oth.join(', ')};
+}
+function _dietText(g){ return (g&&g.dietary||[]).map(d=>_dietWord(g,d,'paren')).join(', '); }
+/* Free text → {allergens, note}. Only EXACT allergen names (singular or plural) become chips;
+   everything else stays in the note verbatim. Deliberately conservative: guessing that "nuts"
+   means tree nuts, or "dairy" means a milk allergy, is a guess about what someone can eat. */
+function _parseAllergyText(str){
+  const out={allergens:[], note:''}; const rest=[];
+  String(str||'').split(/\s*(?:[,;\/&+]|\band\b)\s*/i).map(x=>x.trim()).filter(Boolean).forEach(tok=>{
+    const t=tok.toLowerCase().replace(/\s+/g,' ');
+    const hit=ALLERGENS.find(([k,l])=>{ const L=l.toLowerCase(); return t===L || t===L.replace(/s$/,'') || t+'s'===L || t===k; });
+    if(hit){ if(!out.allergens.includes(hit[0])) out.allergens.push(hit[0]); }
+    else rest.push(tok);
+  });
+  out.note=rest.join(', ');
+  return out;
+}
 function dietIcons(diets){
   const svgMap={
     vegetarian:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Vegetarian"><path d="M12 2C6 2 3 7 3 12c0 4 2.5 7 6 8"/><path d="M12 2c4 3 7 7 7 10 0 4-2.5 7-6 8"/><line x1="12" y1="22" x2="12" y2="10"/></svg>`,
     vegan:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Vegan"><path d="M3 3c0 10 7 17 17 17-1-9-7-15-17-17z"/><path d="M3 3l8 8"/></svg>`,
     lactose:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Lactose free"><path d="M2 15 L12 5 L22 15 L2 15 Z"/><path d="M2 15 L22 15 L22 20 L2 20 Z"/><circle cx="16" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="9" cy="17" r="1.5" fill="currentColor" stroke="none"/><line x1="4" y1="4" x2="20" y2="20"/></svg>`,
     gluten:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" title="Gluten free"><path d="M7 21 Q10 14 12 3 M10.5 18 Q8.5 16.5 9.5 14.5 Q11.5 13.5 12.5 15 Q13 17 10.5 18 M10 14.5 Q8 13 9 11 Q11 10 12 11.5 Q12.5 13.5 10 14.5 M10.5 11 Q8.5 9.5 9.5 7.5 Q11.5 6.5 12.5 8 Q13 10 10.5 11 M11 7.5 Q9.5 6 10 4.5 Q11.5 3.5 12.5 5 Q12.5 6.5 11 7.5 M12.5 15 L16 13 M12 11.5 L16 9.5 M12.5 8 L16 6 M12.5 5 L15.5 3.5 M9.5 14.5 L6 12.5 M9 11 L5.5 9 M9.5 7.5 L6 5.5 M10 4.5 L7.5 3 M4 4 L20 2 M12 6 C10 4 7 5 8 8 C9 10 12 9 12 8 M12 6 C14 4 17 5 16 8 C15 10 12 9 12 8 M12 12 C10 10 7 11 8 14 C9 16 12 15 12 14 M12 12 C14 10 17 11 16 14 C15 16 12 15 12 14 M12 17 C10 15 8 16 9 19 C10 20 12 19 12 18 M12 17 C14 15 16 16 15 19 C14 20 12 19 12 18 M4 4 L20 20"/></svg>`,
+    allergy:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" title="Allergy"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
     other:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" title="Other dietary"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
   };
-  return(diets||[]).map(d=>`<span style="display:inline-flex;align-items:center;color:var(--gold-deep)">${svgMap[d]||''}</span>`).join('');
+  return(diets||[]).map(d=>`<span${d==='allergy'?' class="diet-ico-al"':''} style="display:inline-flex;align-items:center;color:var(--gold-deep)">${svgMap[d]||''}</span>`).join('');
 }
 function outstandingForItem(budgetId){
   const b=STATE.budget.items.find(x=>x.id===budgetId);
@@ -3655,9 +3779,7 @@ function renderDashboard(c, actions){
   const checkDone=_activeCl.filter(i=>i.done).length;
   const checkTotal=_activeCl.length;
   const pct=Math.round(checkDone/checkTotal*100)||0;
-  const budgetSpent=STATE.budget.items.reduce((a,b)=>a+Number(b.deposit||0),0);
   const budgetTotal=STATE.budget.total||0;
-  const budgetPct=budgetTotal?Math.min(100,Math.round(budgetSpent/budgetTotal*100)):0;
   const pinned=_activeCl.filter(i=>i.pinned&&!i.done);
   // "Next up" list, in priority order, capped at 6 (a JS fitter trims further to fit
   // the card's actual height): 1) dated tasks due within the next month (soonest
@@ -3757,6 +3879,12 @@ function renderDashboard(c, actions){
   const W = {
     kpis: ()=>{
       const kStyle = STATE.settings.kpiStyle || 1;
+      // v178 Budget Used: % of budget committed, with paid / still-to-pay underneath (option C).
+      // Was "% · $X deposited", summing every deposit amount whether paid or not.
+      const _bf=_budgetSummaryFigures(), _bt=_bf.budgetTotal||0;
+      const BU = { p: _bt?Math.round(_bf.totalCost/_bt*100):0,
+                   sub: `${fmt(_bf.totalPaid)} paid · ${fmt(Math.max(0,_bf.totalCost-_bf.totalPaid))} to pay` };
+      const BUf=Math.min(100,BU.p)/100;
       const attendPct = total?Math.round(attending/total*100):0;
       // Ring geometry (r=31 → circumference ~194.78)
       const RC = 2*Math.PI*31;
@@ -3775,7 +3903,7 @@ function renderDashboard(c, actions){
         cards = ring('Guests',`${total}`,'guests invited',1,'var(--gold)','guests')
           + ring('Attending',`${attending}`,`${attendPct}% confirmed`,attendPct/100,'var(--green)','guests')
           + ring('Planning',`${pct}<span style="font-size:14px">%</span>`,`${checkDone} of ${checkTotal} tasks`,pct/100,'var(--gold)','checklist')
-          + ring('Budget Used',`${budgetPct}<span style="font-size:14px">%</span>`,`${fmt(budgetSpent)} deposited`,budgetPct/100,'var(--gold)','budget');
+          + ring('Budget Used',`${BU.p}<span style="font-size:14px">%</span>`,BU.sub,BUf,'var(--gold)','budget');
       } else if(kStyle===3){
         // Style 3 — progress bars
         const barCard=(label,valueHtml,sub,frac,color,nav)=>`<div onclick="navigate('${nav}')" style="background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:15px 16px 14px;cursor:pointer;display:flex;flex-direction:column" title="Go to ${label}">
@@ -3787,7 +3915,7 @@ function renderDashboard(c, actions){
         cards = barCard('Guests',`${total}`,'guests invited',1,'var(--gold)','guests')
           + barCard('Attending',`${attending}`,`${attendPct}% confirmed`,attendPct/100,'var(--green)','guests')
           + barCard('Planning',`${pct}<span style="font-size:20px">%</span>`,`${checkDone} of ${checkTotal} tasks`,pct/100,'var(--gold)','checklist')
-          + barCard('Budget Used',`${budgetPct}<span style="font-size:20px">%</span>`,`${fmt(budgetSpent)} deposited`,budgetPct/100,'var(--gold)','budget');
+          + barCard('Budget Used',`${BU.p}<span style="font-size:20px">%</span>`,BU.sub,BUf,'var(--gold)','budget');
       } else if(kStyle===4){
         // Style 4 — icon tiles
         const iconCard=(label,valueHtml,iconSvg,color,nav)=>`<div onclick="navigate('${nav}')" style="background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:13px" title="Go to ${label}">
@@ -3797,7 +3925,7 @@ function renderDashboard(c, actions){
         cards = iconCard('Guests',`${total}`,'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>','var(--ink)','guests')
           + iconCard('Attending',`${attending}`,'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>','var(--green)','guests')
           + iconCard('Planning',`${pct}<span style="font-size:17px">%</span>`,'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>','var(--ink)','checklist')
-          + iconCard('Budget',`${budgetPct}<span style="font-size:17px">%</span>`,'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>','var(--ink)','budget');
+          + iconCard('Budget Used',`${BU.p}<span style="font-size:17px">%</span>`,'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>','var(--ink)','budget');
       } else {
         // Style 1 — framed plaque (letterpress-style inset border, centered serif)
         const plaque=(label,valueHtml,sub,color,nav)=>`<div onclick="navigate('${nav}')" class="kpi-plaque" style="background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:15px 16px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px" title="Go to ${label}">
@@ -3808,7 +3936,7 @@ function renderDashboard(c, actions){
         cards = plaque('Guests',`${total}`,'guests invited','var(--ink)','guests')
           + plaque('Attending',`${attending}`,`${attendPct}% confirmed`,'var(--green)','guests')
           + plaque('Planning',`${pct}<span style="font-size:22px">%</span>`,`${checkDone} of ${checkTotal} tasks`,'var(--ink)','checklist')
-          + plaque('Budget Used',`${budgetPct}<span style="font-size:22px">%</span>`,`${fmt(budgetSpent)} deposited`,'var(--ink)','budget');
+          + plaque('Budget Used',`${BU.p}<span style="font-size:22px">%</span>`,BU.sub,'var(--ink)','budget');
       }
       return `<div id="db-w-kpis" class="db-widget" style="position:relative">
         <div class="kpi-stat-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">${cards}</div>
@@ -3857,14 +3985,15 @@ function renderDashboard(c, actions){
     budgetGlance: ()=>{
       const f=(typeof _budgetSummaryFigures==='function')?_budgetSummaryFigures():{totalCost:0,totalPaid:0,budgetTotal:0};
       const allocated=f.totalCost||0, spent=f.totalPaid||0, gTotal=f.budgetTotal||0;
-      const remaining=gTotal-allocated;
-      const over=gTotal>0 && allocated>gTotal;
+      // v178: same four figures and words as the Budget page (was Allocated / Spent / Remaining).
+      const F4=_budgetFourFigures(allocated, spent, gTotal);
+      const over=F4.over;
       const denom=Math.max(gTotal, allocated, 1);
       const spentPct=Math.max(0,Math.min(100,Math.round(spent/denom*100)));
       const commPct=Math.max(0,Math.min(100,Math.round(allocated/denom*100)));
       const commExtra=Math.max(0,commPct-spentPct);
-      const remColor=over?'var(--red)':'var(--ink)';
-      const remLabel=over?'Over budget':'Remaining';
+      const remColor=F4.remColor;
+      const remLabel=F4.remLbl;
       const warn=over?`<div style="display:flex;align-items:center;gap:7px;margin-top:11px;background:rgba(192,101,62,.1);border:1px solid rgba(192,101,62,.3);border-radius:8px;padding:7px 11px;font-size:12px;color:var(--red-deep)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           Over budget by ${fmt(allocated-gTotal)} — committed exceeds your total.
@@ -3880,17 +4009,18 @@ function renderDashboard(c, actions){
           </button>
         </div>
         <div style="display:flex;gap:18px;margin:16px 0 12px;flex-wrap:wrap">
-          <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Allocated</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;font-weight:600;color:var(--ink)">${fmt(allocated)}</div></div>
-          <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Spent</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;font-weight:600;color:var(--green)">${fmt(spent)}</div></div>
-          <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">${remLabel}</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;font-weight:600;color:${remColor}">${fmt(Math.abs(remaining))}</div></div>
+          <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Committed</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;font-weight:600;color:var(--ink)">${fmt(allocated)}</div></div>
+          <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Paid</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;font-weight:600;color:var(--green)">${fmt(spent)}</div></div>
+          <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Left to pay</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;font-weight:600;color:var(--gold-deep)">${fmt(F4.due)}</div></div>
+          <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">${remLabel}</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;font-weight:600;color:${remColor}">${F4.remVal}</div></div>
         </div>
         <div style="height:10px;background:var(--surface);border-radius:5px;overflow:hidden;display:flex">
           <div style="width:${spentPct}%;background:var(--green);opacity:.85"></div>
           <div style="width:${commExtra}%;background:${over?'var(--red)':'var(--gold)'};opacity:.55"></div>
         </div>
         <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;gap:6px;flex-wrap:wrap">
-          <span style="color:var(--green)">Spent ${fmt(spent)}</span>
-          <span style="color:var(--gold-deep)">Committed ${fmt(allocated)}</span>
+          <span style="color:var(--green)">Paid ${fmt(spent)}</span>
+          <span style="color:var(--gold-deep)">Left to pay ${fmt(F4.due)}</span>
           <span style="color:var(--muted)">of ${fmt(gTotal)}</span>
         </div>
         ${warn}
@@ -3900,10 +4030,13 @@ function renderDashboard(c, actions){
     budget: ()=>`<div id="db-w-budget" class="db-widget" style="background:var(--cream);border:1px solid var(--border);border-radius:16px;padding:20px;cursor:pointer" onclick="navigate('budget')" title="Go to Budget">
       <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Finances</div>
       <div style="font-family:Cormorant Garamond,serif;font-size:20px;font-weight:500;color:var(--ink);margin-bottom:12px">Budget</div>
-      <div style="font-family:Cormorant Garamond,serif;font-size:36px;font-weight:600;color:var(--ink);line-height:1">${fmt(budgetSpent)}</div>
-      <div style="font-size:12.5px;color:var(--muted);margin-top:6px;margin-bottom:12px">deposited of <strong style="color:var(--ink)">${fmt(budgetTotal)}</strong></div>
-      <div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden"><div style="height:100%;width:${budgetPct}%;background:var(--gold);border-radius:3px;opacity:.7"></div></div>
-      ${budgetTotal?`<div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px"><span style="color:var(--green)">${fmt(budgetSpent)} deposited</span><span style="color:var(--muted)">${fmt(Math.max(0,budgetTotal-budgetSpent))} remaining</span></div>`:""}
+      ${(()=>{ /* v178: everything actually paid (was: the sum of every deposit, paid or not). */
+        const f=_budgetSummaryFigures(), F4=_budgetFourFigures(f.totalCost,f.totalPaid,f.budgetTotal);
+        const den=Math.max(f.budgetTotal,f.totalCost,1), pw=Math.min(100,f.totalPaid/den*100), dw=Math.min(100-pw,F4.due/den*100);
+        return `<div style="font-family:Cormorant Garamond,serif;font-size:36px;font-weight:600;color:var(--green);line-height:1">${fmt(f.totalPaid)}</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:6px;margin-bottom:12px">paid of <strong style="color:var(--ink)">${fmt(f.budgetTotal)}</strong></div>
+      <div style="height:6px;background:var(--surface);border-radius:3px;overflow:hidden;display:flex"><div style="height:100%;width:${pw}%;background:var(--green);opacity:.85"></div><div style="height:100%;width:${dw}%;background:${F4.over?'var(--red)':'var(--gold)'};opacity:.6"></div></div>
+      ${f.budgetTotal?`<div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px;gap:8px;flex-wrap:wrap"><span style="color:var(--gold-deep)">${fmt(F4.due)} left to pay</span><span style="color:${F4.remColor}">${F4.remVal} ${F4.remLbl.toLowerCase()}</span></div>`:''}`; })()}
       ${budgetDue.length?`<div style="border-top:1px solid var(--border);padding-top:16px;margin-top:18px">
         <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Coming up</div>
         ${budgetDue.map((p,idx)=>{
@@ -6558,7 +6691,7 @@ function guestTableHtml(list){
     declined:{label:'Declined',bg:'rgba(192,57,43,.12)',fg:'var(--red)'},
     awaiting:{label:'Awaiting',bg:'var(--surface)',fg:'var(--muted)'}
   };
-  const dietLabels={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose',gluten:'Gluten',other:'Other'};
+  const dietLabels=DIET_LABELS;
 
   if(!list.length) return `<div style="font-size:13px;color:var(--muted);padding:18px 0;text-align:center">No guests match this filter.</div>`;
 
@@ -6673,7 +6806,7 @@ function guestTableHtml(list){
       const diets=(g.dietary||[]);
       return `<td style="${td}" class="gt-td" data-gid="${g.id}" data-key="dietary" onclick="_gtEditDiet(this)" title="Click to edit dietary">
         <span class="gt-disp" style="${editable};display:inline-flex;flex-wrap:wrap;gap:3px;padding:2px 4px;margin:-2px -4px;min-width:40px">${
-          diets.length?diets.map(d=>`<span class="tag" style="font-size:9.5px;display:inline-flex;align-items:center;gap:3px"><span style="display:inline-flex;color:var(--gold-deep)">${dietIcons([d])}</span>${dietLabels[d]||_escHtml(d)}</span>`).join(''):'<span style="color:var(--muted);font-style:italic;font-size:11px;opacity:.22">add</span>'
+          diets.length?diets.map(d=>`<span class="tag${d==='allergy'?' diet-tag-al':''}" style="font-size:9.5px;display:inline-flex;align-items:center;gap:3px"><span style="display:inline-flex;color:var(--gold-deep)">${dietIcons([d])}</span>${_escHtml(_dietWord(g,d))}</span>`).join(''):'<span style="color:var(--muted);font-style:italic;font-size:11px;opacity:.22">add</span>'
         }</span></td>`;
     }
     return `<td style="${td}">—</td>`;
@@ -6978,19 +7111,23 @@ function _gtEditDiet(td){
   // something or it is theatre. See _confirmOverwriteGuestValue().
   if(_isGuestGiven(g,'dietary')){ _confirmOverwriteGuestValue(g,'dietary'); return; }
   _gtDietGid=gid;
-  const diets=['vegetarian','vegan','lactose','gluten','other'];
-  const labels={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose',gluten:'Gluten',other:'Other'};
+  const diets=DIET_KEYS;
+  const labels=DIET_LABELS;
   const cur=new Set(g.dietary||[]);
+  // Allergy gets a single "Allergic to" box here — no room for the allergen chips, so the
+  // text is parsed back into chips + note on the way in (see _parseAllergyText).
+  const othBox=`<input id="gt-oth-txt" class="form-input" value="${_escHtml(_otherText(g))}" placeholder="Please specify…" oninput="_gtOthInput(this.value)" style="display:${cur.has('other')?'block':'none'};font-size:12px;padding:6px 8px;height:auto;margin:2px 0 4px 23px;width:calc(100% - 23px)"/>`;
+  const alBox=`<input id="gt-al-txt" class="form-input" value="${_escHtml(_allergyText(g))}" placeholder="Allergic to…" oninput="_gtAlInput(this.value)" style="display:${cur.has('allergy')?'block':'none'};font-size:12px;padding:6px 8px;height:auto;margin:2px 0 4px 23px;width:calc(100% - 23px)"/>`;
   const pop=document.createElement('div');
   pop.id='gt-diet-pop';
-  pop.style.cssText='position:absolute;z-index:1200;width:190px;background:var(--cream);border:1px solid var(--border);border-radius:11px;box-shadow:0 8px 28px rgba(26,26,24,.18);padding:12px 14px';
+  pop.style.cssText='position:absolute;z-index:1200;width:210px;background:var(--cream);border:1px solid var(--border);border-radius:11px;box-shadow:0 8px 28px rgba(26,26,24,.18);padding:12px 14px';
   pop.innerHTML=`<div style="font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:7px">Dietary</div>
-    ${diets.map(d=>`<label style="display:flex;align-items:center;gap:8px;font-size:12.5px;padding:4px 0;cursor:pointer"><input type="checkbox" ${cur.has(d)?'checked':''} onchange="_gtDietToggle('${d}',this.checked)" style="width:15px;height:15px;accent-color:var(--gold)"/>${labels[d]}</label>`).join('')}
+    ${diets.map(d=>`<label style="display:flex;align-items:center;gap:8px;font-size:12.5px;padding:4px 0;cursor:pointer"><input type="checkbox" ${cur.has(d)?'checked':''} onchange="_gtDietToggle('${d}',this.checked)" style="width:15px;height:15px;accent-color:var(--gold)"/>${labels[d]}</label>${d==='allergy'?alBox:d==='other'?othBox:''}`).join('')}
     <div style="text-align:right;margin-top:6px"><button class="btn btn-sm btn-outline" onclick="_gtCloseDietPop(true)">Done</button></div>`;
   document.body.appendChild(pop);
   const r=td.getBoundingClientRect();
   let left=r.left+window.scrollX;
-  if(left+190>window.scrollX+document.documentElement.clientWidth-8) left=window.scrollX+document.documentElement.clientWidth-190-8;
+  if(left+210>window.scrollX+document.documentElement.clientWidth-8) left=window.scrollX+document.documentElement.clientWidth-210-8;
   pop.style.top=(r.bottom+window.scrollY+4)+'px'; pop.style.left=Math.max(8,left)+'px';
   setTimeout(()=>document.addEventListener('click',_gtDietPopCloser),0);
 }
@@ -7005,6 +7142,16 @@ function _gtDietToggle(d,on){
   const i=g.dietary.indexOf(d);
   if(on && i<0) g.dietary.push(d);
   else if(!on && i>=0) g.dietary.splice(i,1);
+  if(d==='allergy'||d==='other'){ const box=document.getElementById(d==='allergy'?'gt-al-txt':'gt-oth-txt'); if(box){ box.style.display=on?'block':'none'; if(on) box.focus(); } }
+  saveToStorage();
+}
+function _gtOthInput(v){
+  const g=STATE.guests.find(x=>x.id===_gtDietGid); if(!g) return;
+  g.dietOther=String(v||'').trim(); saveToStorage();
+}
+function _gtAlInput(v){
+  const g=STATE.guests.find(x=>x.id===_gtDietGid); if(!g) return;
+  const r=_parseAllergyText(v); g.allergens=r.allergens; g.allergyNote=r.note;
   saveToStorage();
 }
 function _gtCloseDietPop(rerender){
@@ -7353,7 +7500,7 @@ function inviteCardHtml(g){
         ${g.phone?`<div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 4.9 2 2 0 0 1 3.6 2.69h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.91 10.3a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72A2 2 0 0 1 22 17.73z"/></svg>${g.phone}</div>`:''}
         ${g.email?`<div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${g.email}</div>`:''}
         ${g.address?`<div style="display:flex;align-items:flex-start;gap:7px;font-size:12.5px;color:var(--ink)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0;margin-top:2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${g.address}</div>`:''}
-        ${g.dietary&&g.dietary.length?`<div style="font-size:12px;color:var(--muted)">${dietIcons(g.dietary)} ${g.dietary.join(', ')}</div>`:''}
+        ${g.dietary&&g.dietary.length?`<div style="font-size:12px;color:var(--muted)">${dietIcons(g.dietary)} ${_dietRawHtml(g)}</div>`:''}
         ${g.notes?`<div style="font-size:12px;color:var(--muted);font-style:italic">${g.notes}</div>`:''}
       </div>
     </div>`:''}
@@ -8581,7 +8728,7 @@ function guestCardHtml(g, isLinked=false){
         const tags=(g.tags||[]).filter(t=>!(roleShown && String(t).trim().toLowerCase()===roleWord));
         return tags.length?`<div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px">${tags.map(t=>_tagChipHtml(t)).join('')}</div>`:'';
       })()}
-      ${!_hiddenGuestSections.has('gf_dietary')&&g.dietary&&g.dietary.length?`<div style="margin-top:3px;font-size:12px;color:var(--muted)">${dietIcons(g.dietary)} ${g.dietary.join(', ')}</div>`:''}
+      ${!_hiddenGuestSections.has('gf_dietary')&&g.dietary&&g.dietary.length?`<div style="margin-top:3px;font-size:12px;color:var(--muted)">${dietIcons(g.dietary)} ${_dietRawHtml(g)}</div>`:''}
     </div>
     <div class="guest-rsvp-wrap" style="position:relative;flex-shrink:0">
       <select class="rsvp-select sel-chevron rsvp-${g.rsvp||'awaiting'}" style="width:110px;font-size:12px;padding:6px 28px 6px 10px;border:1px solid var(--border);border-radius:8px;background-color:${g.rsvp==='attending'?'rgba(92,143,114,.22)':g.rsvp==='declined'?'rgba(180,60,60,.10)':'var(--cream)'};color:var(--ink);font-family:'Inter',sans-serif;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none" onclick="event.stopPropagation()" onchange="event.stopPropagation();setRsvpStatus('${g.id}',this.value)">
@@ -9032,6 +9179,9 @@ function setGuestList(val){
   if(aBtn) aBtn.style.cssText=`padding:6px 18px;font-size:12.5px;font-weight:${val==='A'?'600':'500'};border:none;background:${val==='A'?'var(--gold)':'transparent'};color:${val==='A'?'#fff':'var(--muted)'};cursor:pointer;transition:background .15s`;
   if(bBtn) bBtn.style.cssText=`padding:6px 18px;font-size:12.5px;font-weight:${val==='B'?'600':'500'};border:none;background:${val==='B'?'var(--muted)':'transparent'};color:${val==='B'?'#fff':'var(--muted)'};cursor:pointer;transition:background .15s`;
 }
+function _egOthShow(on){ const w=document.getElementById('eg-oth-wrap'); if(w) w.style.display=on?'block':'none'; }
+function _egAlShow(on){ const w=document.getElementById('eg-al-wrap'); if(w) w.style.display=on?'block':'none'; }
+function _egAlChip(b){ const on=!b.classList.contains('on'); b.classList.toggle('on',on); b.textContent=(on?'✓ ':'+ ')+_allergenLabel(b.dataset.k); }
 function toggleDietModal(btn){
   btn.classList.toggle('open');
   document.getElementById('diet-modal-section').classList.toggle('hidden');
@@ -9301,12 +9451,11 @@ function openEditGuest(id){
     ${currentPartner?`<option value="${currentPartner.id}" selected>${currentPartner.name} (current)</option>`:''}
     ${linkable.filter(x=>!currentPartner||x.id!==currentPartner.id).map(x=>`<option value="${x.id}">${x.name}</option>`).join('')}`;
   // Inline summaries for collapsed sections (shown only when there's data).
-  const _dietLabels={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose',gluten:'Gluten',other:'Other'};
   const _handleSum=(g.handle||'').trim()?_escHtml(_bareHandle(g.handle)):'';
   const _tagsArr=(g.tags||[]);
   const _linkSum=currentPartner?`linked: ${_escHtml(currentPartner.name)}`:'';
   const _moreBits=[_handleSum, _tagsArr.length?`${_tagsArr.length} tag${_tagsArr.length!==1?'s':''}`:'', _linkSum].filter(Boolean);
-  const _dietSummary=(g.dietary||[]).map(d=>_dietLabels[d]||d).join(', ');
+  const _dietSummary=_escHtml(_dietText(g));
   const _kaSummary=_egKA.length?`${_egKA.length} guest${_egKA.length!==1?'s':''}`:'';
   const _ageBandSum=_guestAgeBand(g)!=='adult'?_ageBandLabel(_guestAgeBand(g)):'';
   if(_ageBandSum) _moreBits.unshift(_ageBandSum);
@@ -9328,8 +9477,20 @@ function openEditGuest(id){
       <div id="eg-link-results" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;max-height:200px;overflow-y:auto;margin-top:4px;display:none"></div>
       <div id="eg-link-lbl" style="font-size:11.5px;color:var(--muted);margin-top:4px">${currentPartner?`Linked with ${_escHtml(currentPartner.name)}. Search to change, or clear the field to unlink.`:''}</div>
     </div>`;
+  const _alOn=_hasAllergy(g);
+  const _alSel=new Set(Array.isArray(g.allergens)?g.allergens:[]);
   const _dietBody=`<div style="display:flex;flex-wrap:wrap;gap:12px">
-      ${['vegetarian','vegan','lactose','gluten','other'].map(d=>`<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="diet-cb" value="${d}" ${(g.dietary||[]).includes(d)?'checked':''} style="accent-color:var(--gold)"/>${d.charAt(0).toUpperCase()+d.slice(1)}</label>`).join('')}
+      ${DIET_KEYS.map(d=>`<label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="diet-cb" value="${d}"${d==='allergy'?' onchange="_egAlShow(this.checked)"':d==='other'?' onchange="_egOthShow(this.checked)"':''} ${(g.dietary||[]).includes(d)?'checked':''} style="accent-color:var(--gold)"/>${d.charAt(0).toUpperCase()+d.slice(1)}</label>`).join('')}
+    </div>
+    <div class="al-wrap" id="eg-al-wrap" style="display:${_alOn?'block':'none'}">
+      <span class="al-lbl">Allergic to</span>
+      <div class="al-chips">${ALLERGENS.map(([k,l])=>`<button type="button" class="al-chip${_alSel.has(k)?' on':''}" data-k="${k}" onclick="_egAlChip(this)">${_alSel.has(k)?'✓':'+'} ${l}</button>`).join('')}</div>
+      <input class="form-input" id="eg-al-note" value="${_escHtml(g.allergyNote||'')}" placeholder="Anything else? e.g. kiwi fruit"/>
+      <div class="al-hint">Common allergens are counted on the RSVP summary; anything typed shows as written.</div>
+    </div>
+    <div class="al-wrap" id="eg-oth-wrap" style="display:${(g.dietary||[]).includes('other')?'block':'none'}">
+      <label class="al-lbl" for="eg-oth-note">Other — please specify</label>
+      <input class="form-input" id="eg-oth-note" value="${_escHtml(g.dietOther||'')}" placeholder="e.g. halal, no pork, pescatarian"/>
     </div>`;
   const _kaBody=`
       <div style="font-size:11.5px;color:var(--muted);margin:-2px 0 8px">Won't be seated together or beside each other.</div>
@@ -9390,6 +9551,13 @@ function saveEditGuest(id, quiet){
   g.tags=(document.getElementById('eg-tags').value||'').split(',').map(t=>t.trim()).filter(Boolean);
   { const el=document.getElementById('eg-rsvpby'); if(el) g.rsvpByOverride=el.value||''; }
   g.dietary=[...document.querySelectorAll('.diet-cb:checked')].map(c=>c.value);
+  { const _w=document.getElementById('eg-al-wrap');
+    if(_w){ const _n=document.getElementById('eg-al-note');
+            // A common allergen typed into "Anything else" folds into its chip, so it is counted once.
+            const _pr=_parseAllergyText(_n?_n.value:(g.allergyNote||''));
+            g.allergens=[...new Set([..._w.querySelectorAll('.al-chip.on')].map(b=>b.dataset.k).concat(_pr.allergens))];
+            g.allergyNote=_pr.note; } }
+  { const _o=document.getElementById('eg-oth-note'); if(_o) g.dietOther=_o.value.trim(); }
   { const _ab=document.getElementById('eg-ageband'); if(_ab) _setGuestAgeBand(g, _ab.value); }
 
   // Keep-apart flags (mutual): update this guest and reciprocate on the others.
@@ -10646,9 +10814,27 @@ function renderRsvpMgr(c, actions){
   };
 
   // ── Option C: dietary + plus-one breakdown (reads live from guests) ──
-  const dietLabels={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose intolerance',gluten:'Gluten intolerance',other:'Other restriction'};
-  const dietCounts={vegetarian:0,vegan:0,lactose:0,gluten:0,other:0};
-  STATE.guests.forEach(g=>{ if((g.listType||'A')==='B') return; (g.dietary||[]).forEach(d=>{ if(dietCounts[d]!==undefined) dietCounts[d]++; }); });
+  const dietLabels={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose intolerance',gluten:'Gluten intolerance',allergy:'Allergy',other:'Other restriction'};
+  const dietCounts={vegetarian:0,vegan:0,lactose:0,gluten:0,allergy:0,other:0};
+  // Allergy breakdown for the caterer: each common allergen counted, typed notes listed as
+  // written (grouped case-insensitively), and anyone ticked with no detail flagged to chase.
+  const alCounts={}, alNotes={}; let alUnspec=0; const othNotes={}; let othUnspec=0;
+  STATE.guests.forEach(g=>{ if((g.listType||'A')==='B') return; (g.dietary||[]).forEach(d=>{ if(dietCounts[d]!==undefined) dietCounts[d]++; });
+    if(_hasAllergy(g)){
+      const _pr=_parseAllergyText(g.allergyNote||'');
+      const ks=[...new Set((Array.isArray(g.allergens)?g.allergens:[]).concat(_pr.allergens))]; const n=_pr.note.trim();
+      ks.forEach(k=>{ alCounts[k]=(alCounts[k]||0)+1; });
+      if(n){ const key=n.toLowerCase(); if(!alNotes[key]) alNotes[key]={label:n,n:0}; alNotes[key].n++; }
+      if(!ks.length && !n) alUnspec++;
+    }
+    if((g.dietary||[]).includes('other')){ const o=_otherText(g);
+      if(o){ const key=o.toLowerCase(); if(!othNotes[key]) othNotes[key]={label:o,n:0}; othNotes[key].n++; } else othUnspec++; } });
+  const _alSubRow=(lbl,n,em)=>`<div class="rsvp-al-sub" style="display:flex;justify-content:space-between;align-items:center;padding:6px 0 6px 22px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted)"><span${em?' style="font-style:italic"':''}>${lbl}</span><span>${n}</span></div>`;
+  const alSubHtml=ALLERGENS.filter(([k])=>alCounts[k]).map(([k,l])=>_alSubRow(l,alCounts[k]))
+    .concat(Object.values(alNotes).map(o=>_alSubRow(_escHtml(o.label),o.n)))
+    .concat(alUnspec?[_alSubRow('Not specified yet',alUnspec,true)]:[]).join('');
+  const othSubHtml=Object.values(othNotes).map(o=>_alSubRow(_escHtml(o.label),o.n))
+    .concat(othUnspec?[_alSubRow('Not specified yet',othUnspec,true)]:[]).join('');
   const dietTotal=Object.values(dietCounts).reduce((a,b)=>a+b,0);
   const plusConfirmed=STATE.guests.filter(g=>g.plusOneId&&(g.listType||'A')!=='B').length;
   const plusUnused=STATE.guests.filter(g=>g.plusOne&&!g.plusOneId&&(g.listType||'A')!=='B').length;
@@ -10706,7 +10892,7 @@ function renderRsvpMgr(c, actions){
           <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px">
             <span style="display:inline-flex;align-items:center;gap:7px">${dietIcons([k])} ${dietLabels[k]}</span>
             <span style="font-weight:600;color:var(--gold-deep)">${dietCounts[k]}</span>
-          </div>`).join(''):`<div style="font-size:13px;color:var(--muted);padding:8px 0">No dietary needs recorded yet.</div>`}
+          </div>${k==='allergy'?alSubHtml:k==='other'?othSubHtml:''}`).join(''):`<div style="font-size:13px;color:var(--muted);padding:8px 0">No dietary needs recorded yet.</div>`}
       </div>`:'',
       plusones:!hidden.has('plusones')?`<div class="card">
         <div class="section-eyebrow" style="margin-bottom:12px">Plus-Ones</div>
@@ -10867,7 +11053,7 @@ function _isGuestGiven(g, field){
 function _guestValueText(g, field){
   if(field==='dietary'){
     const d=(g.dietary||[]);
-    return d.length ? d.map(x=>(typeof dietLabels!=='undefined' && dietLabels[x])||x).join(', ') : '—';
+    return d.length ? _dietText(g) : '—';
   }
   return String(g.meal||'').trim() || '—';
 }
@@ -11211,7 +11397,7 @@ function rsvpTableHtml(list,statusMeta){
   const c=_rsvpCols();
   let order=_rsvpColOrder().filter(k=>c[k]);
   const invitedSet=_invitedGuestIdSet();
-  const dietLabels={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose',gluten:'Gluten',other:'Other'};
+  const dietLabels=DIET_LABELS;
 
   // Columns render in their saved order. Name and Invite are ordinary columns now
   // (always visible, but freely positioned). Name can be "frozen" — when it is also
@@ -11338,7 +11524,7 @@ function rsvpTableHtml(list,statusMeta){
       return diets.length
         ? `<span class="${gg?'gt-src-guest':''}" title="${gg?'Confirmed by the guest when they RSVP\'d':''}" style="display:inline-flex;flex-wrap:wrap;gap:3px;align-items:center">`
           +(gg?`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="flex-shrink:0;opacity:.75"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`:'')
-          +diets.map(d=>`<span class="tag ${chip}" style="font-size:9.5px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap"><span style="display:inline-flex;color:${gg?'inherit':'var(--gold-deep)'}">${dietIcons([d])}</span>${dietLabels[d]||_escHtml(d)}</span>`).join('')+`</span>`
+          +diets.map(d=>`<span class="tag ${chip}${d==='allergy'?' diet-tag-al':''}" style="font-size:9.5px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap"><span style="display:inline-flex;color:${gg?'inherit':'var(--gold-deep)'}">${dietIcons([d])}</span>${_escHtml(_dietWord(g,d))}</span>`).join('')+`</span>`
         : `<span style="color:var(--muted)">—</span>`;
     }
     if(key==='meal'){
@@ -11523,7 +11709,7 @@ function _rsvpTrackerPrint(){
 
   // Build groups (one per household), preserving guest order within each.
   const used=new Set(); const groups=[];
-  const memObj=g=>({name:g.name||'', rsvp:((!g.rsvp||g.rsvp==='awaiting')?'awaiting':g.rsvp), date:_fmtRsvpDate(g.rsvpDate)||'', diet:(g.dietary||[]).slice(), phone:(g.phone||'').trim(), email:(g.email||'').trim(), tags:(g.tags||[]).slice(), address:(g.address||'').trim()});
+  const memObj=g=>({name:g.name||'', rsvp:((!g.rsvp||g.rsvp==='awaiting')?'awaiting':g.rsvp), date:_fmtRsvpDate(g.rsvpDate)||'', diet:(g.dietary||[]).slice(), al:(_hasAllergy(g)?_allergyText(g):''), oth:((g.dietary||[]).includes('other')?_otherText(g):''), phone:(g.phone||'').trim(), email:(g.email||'').trim(), tags:(g.tags||[]).slice(), address:(g.address||'').trim()});
   // Families first.
   (STATE.families||[]).forEach(fam=>{
     const mem=fam.memberIds.map(id=>byId[id]).filter(Boolean);
@@ -11580,9 +11766,10 @@ function _trackerPrintDoc(cfg){
     vegan:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3c0 10 7 17 17 17-1-9-7-15-17-17z"/><path d="M3 3l8 8"/></svg>',
     lactose:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15 L12 5 L22 15 L2 15 Z"/><path d="M2 15 L22 15 L22 20 L2 20 Z"/><line x1="4" y1="4" x2="20" y2="20"/></svg>',
     gluten:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21 Q10 14 12 3 M12 6 C10 4 7 5 8 8 C9 10 12 9 12 8 M12 6 C14 4 17 5 16 8 C15 10 12 9 12 8 M12 12 C10 10 7 11 8 14 C9 16 12 15 12 14 M12 12 C14 10 17 11 16 14 C15 16 12 15 12 14 M4 4 L20 2"/></svg>',
+    allergy:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#A8322A"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
     other:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
   };
-  const DIET_LBL={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose',gluten:'Gluten',other:'Other'};
+  const DIET_LBL={vegetarian:'Vegetarian',vegan:'Vegan',lactose:'Lactose',gluten:'Gluten',allergy:'Allergy',other:'Other'};
   // Serialise config + assets for the embedded script.
   const DATA=JSON.stringify(cfg).replace(/<\/script>/gi,'<\\/script>');
   const DSVG=JSON.stringify(DIET_SVG).replace(/<\/script>/gi,'<\\/script>');
@@ -11689,7 +11876,7 @@ function dOver(e,k){if(SYNC)return;e.preventDefault();var r=e.currentTarget;if(r
 function dLeave(e){var r=e.currentTarget;if(r)r.classList.remove('dragover');}
 function dDrop(e,k){if(SYNC)return;e.preventDefault();var r=e.currentTarget;if(r)r.classList.remove('dragover');if(!_drag||_drag===k)return;var f=ORDER.indexOf(_drag);if(f<0)return;ORDER.splice(f,1);ORDER.splice(ORDER.indexOf(k),0,_drag);_drag=null;renderColMenu();renderTable();persist();}
 function visCols(){var c=effCols(),ord=effOrder();return ord.filter(function(k){return k!=='dietary'&&c[k];});}
-function dietHtml(m){var c=effCols();if(!c.dietary||!m.diet||!m.diet.length)return '';var title=m.diet.map(function(d){return DIET_LBL[d]||d;}).join(', ');var ic=m.diet.map(function(d){return DIET_SVG[d]||'';}).join('');return '<span class="diet" title="'+esc(title)+'">'+ic+'</span>';}
+function dietHtml(m){var c=effCols();if(!c.dietary||!m.diet||!m.diet.length)return '';var title=m.diet.map(function(d){return (d==='allergy'&&m.al)?('Allergy ('+m.al+')'):(d==='other'&&m.oth)?('Other ('+m.oth+')'):(DIET_LBL[d]||d);}).join(', ');var ic=m.diet.map(function(d){return DIET_SVG[d]||'';}).join('');return '<span class="diet" title="'+esc(title)+'">'+ic+'</span>';}
 function renderTable(){
   var vc=visCols();
   document.getElementById('thead').innerHTML='<tr><th>Name</th>'+vc.map(function(k){return '<th>'+HEAD[k]+'</th>';}).join('')+'</tr>';
@@ -12692,7 +12879,7 @@ function openRsvpPage(){
   <script>
   const guests=${guestsData};
   let selected=[];let responses={};
-  const DIETS=[['vegetarian','Vegetarian'],['vegan','Vegan'],['lactose','Lactose intolerance'],['gluten','Gluten intolerance'],['other','Other restriction']];
+  const DIETS=[['vegetarian','Vegetarian'],['vegan','Vegan'],['lactose','Lactose intolerance'],['gluten','Gluten intolerance'],['allergy','Allergy'],['other','Other restriction']];
   function show(id){['s1','s2','s3'].forEach(s=>{document.getElementById(s).style.display=s===id?'block':'none'});}
   show('s1');
   function doSearch(){
@@ -12738,6 +12925,8 @@ function openRsvpPage(){
           '<div class="diet-chip-row">'+
             DIETS.map(d=>'<span class="diet-chip'+(r.diets[d[0]]?' sel':'')+'" onclick="toggleDiet(\\''+p.id+'\\',\\''+d[0]+'\\')">'+d[1]+'</span>').join('')+
           '</div>'+
+          (r.diets.allergy?'<div style="margin-top:10px"><label class="lbl">Allergic to</label><input class="inp" value="'+String(r.allergy||'').replace(/"/g,'&quot;')+'" oninput="setAllergy(\\''+p.id+'\\',this.value)" placeholder="e.g. peanuts, shellfish"/></div>':'')+
+          (r.diets.other?'<div style="margin-top:10px"><label class="lbl">Other — please specify</label><input class="inp" value="'+String(r.other||'').replace(/"/g,'&quot;')+'" oninput="setOther(\\''+p.id+'\\',this.value)" placeholder="e.g. halal"/></div>':'')+
           (canPlus?'<div style="margin-top:12px"><label class="lbl">Plus one name</label><input class="inp" value="'+(r.plusName||'')+'" oninput="setPlus(\\''+p.id+'\\',this.value)" placeholder="Your plus one\\'s name (optional)"/></div>':'')+
         '</div>'+
       '</div>';
@@ -12752,6 +12941,8 @@ function openRsvpPage(){
     renderPeople();
   }
   function setPlus(id,val){ responses[id].plusName=val; }
+  function setAllergy(id,val){ responses[id].allergy=val; }
+  function setOther(id,val){ responses[id].other=val; }
   function goBack(){show('s1');selected=[];responses={};}
   function submitRsvp(){
     const unanswered=selected.filter(p=>!responses[p.id].rsvp);
@@ -14333,7 +14524,7 @@ function checkItemHtml(i, mode){
         ${_taskHasAppts(i)?`<div class="cl-detail-wide" style="margin-top:4px;display:flex;flex-wrap:wrap;gap:5px">${_apptRowChip(i)}</div>`:''}
         ${i.notes?`<div class="cl-detail-wide" style="font-size:12px;color:var(--muted);margin-top:3px;font-style:italic">${i.notes}</div>`:''}
         ${i.url?`<div class="cl-detail-wide" style="margin-top:4px">${_urlChipHtml(i.url)}</div>`:''}
-        ${budgetBadge?`<div id="cllink-${i.id}" class="cl-link-chip cl-detail-wide" onclick="event.stopPropagation();_openLinkMenu('task','${i.id}')" title="Linked · click to manage" style="margin-top:4px;display:inline-block;border-radius:6px;cursor:pointer;padding:2px 5px;margin-left:-5px">${budgetBadge}</div>`:''}${vendorBadges}
+        ${_lkChipHtml(i)}${budgetBadge?`<div id="cllink-${i.id}" class="cl-link-chip cl-detail-wide" onclick="event.stopPropagation();_openLinkMenu('task','${i.id}')" title="Linked · click to manage" style="margin-top:4px;display:inline-block;border-radius:6px;cursor:pointer;padding:2px 5px;margin-left:-5px">${budgetBadge}</div>`:''}${vendorBadges}
       </div>
     </div>
     ${hasDetails?`<button onclick="toggleCheckDetails('${i.id}')" title="Show details" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--muted);display:flex;align-items:center">
@@ -14366,7 +14557,7 @@ function checkItemHtml(i, mode){
       ${_taskHasAppts(i)?`<div class="cl-detail-wide" style="margin-top:4px;display:flex;flex-wrap:wrap;gap:5px">${_apptRowChip(i)}</div>`:''}
       ${i.notes?`<div class="cl-detail-wide" style="font-size:12px;color:var(--muted);margin-top:3px;font-style:italic">${i.notes}</div>`:''}
       ${i.url?`<div class="cl-detail-wide" style="margin-top:4px">${_urlChipHtml(i.url)}</div>`:''}
-      ${budgetBadge?`<div id="cllink-${i.id}" class="cl-link-chip cl-detail-wide" onclick="event.stopPropagation();_openLinkMenu('task','${i.id}')" title="Linked · click to manage" style="margin-top:4px;display:inline-block;border-radius:6px;cursor:pointer;padding:2px 5px;margin-left:-5px">${budgetBadge}</div>`:''}${vendorBadges}
+      ${_lkChipHtml(i)}${budgetBadge?`<div id="cllink-${i.id}" class="cl-link-chip cl-detail-wide" onclick="event.stopPropagation();_openLinkMenu('task','${i.id}')" title="Linked · click to manage" style="margin-top:4px;display:inline-block;border-radius:6px;cursor:pointer;padding:2px 5px;margin-left:-5px">${budgetBadge}</div>`:''}${vendorBadges}
     </div>
     <button onclick="togglePin('${i.id}')" style="background:none;border:none;cursor:pointer;padding:4px;color:${i.pinned?'var(--gold-deep)':'var(--muted)'};display:flex;align-items:center" title="${i.pinned?'Unpin from dashboard':'Pin to dashboard'}">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="${i.pinned?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17z"/></svg>
@@ -14452,62 +14643,23 @@ function toggleCheck(id, silent){
   navigate('checklist');
   // In silent mode (used by the Escape revert) we never open a secondary popup.
   if(silent) return;
+  // v179: one setting decides what follows a tick (_linkedMode). No pop-up chains.
+  _escapeRevert=null; _checkSnapshot=null; _escapeRevertArm=false;
+  if(!i.done) delete i._lkChip;
+  let _lkHandled=false;
   if(_depTarget){
-    // Arm the revert: Escape re-toggles the task silently (restores task + linked flags).
-    _armEscapeRevert(()=>toggleCheck(id, true));
-    if(_taskDepositKeyword(i)) _maybeAskDeposit(_depTarget.b, _depTarget.s, i.done, i);
-    else if(_taskSoftDepositKeyword(i)) _askDepositOrBalance(_depTarget.b, _depTarget.s, i.done, i);
-    else if(i.done && _taskBookedKeywordTask(i)){
-      // Booked task completed → booking usually means the deposit was paid.
-      // Suggest marking the deposit (or offer to add one if none). If the target
-      // has no deposit and the user declines adding one, fall through to the
-      // balance prompt (see _bookedFallbackBalance handling in the add-deposit decline).
-      _bookedFallbackBalance = _targetHasDeposit(_depTarget.b, _depTarget.s) ? null : {bid:_depTarget.b.id, sid:_depTarget.s?_depTarget.s.id:''};
-      _maybeAskDeposit(_depTarget.b, _depTarget.s, i.done, i);
-      // If no popup opened at all (e.g. deposit already paid, or add-deposit suppressed),
-      // fall back to the balance prompt so booked completion still offers something.
-      if(document.getElementById('modal-overlay').classList.contains('hidden')){
-        _bookedFallbackBalance=null;
-        _maybeAskMarkBudget(_depTarget.b, _depTarget.s, i.done);
-      }
-    }
-    else _maybeAskMarkBudget(_depTarget.b, _depTarget.s, i.done);
-    _escapeRevertArm=false;
-    // If a popup actually opened, keep the master snapshot so × / Escape can revert
-    // the whole chain. If none opened, drop both contexts.
-    if(document.getElementById('modal-overlay').classList.contains('hidden')){
-      _escapeRevert=null; _checkSnapshot=null;
-    } else {
-      _checkSnapshot=_preCheck;
-    }
-    // Booked task just completed → if more than one badge placement is possible and
-    // the user hasn't fixed a choice (or opted to always use the item), ask where the
-    // BOOKED badge should sit. If another popup opened above (e.g. "mark paid?"), defer
-    // the placement prompt so it runs once that popup is dismissed.
-    _pendingBookedPlacement=null;
-    if(i.done && _taskBookedKeywordTask(i) && i.budgetId
-       && !(STATE.settings && STATE.settings.alwaysBookedOnItem)
-       && i.bookedBadgePlacement===undefined){
-      const opts=_bookedPlacementOptions(_depTarget.b, _depTarget.s);
-      if(opts.length>1){
-        if(document.getElementById('modal-overlay').classList.contains('hidden')){
-          _askBookedPlacement(i.id);
-        } else {
-          _pendingBookedPlacement=i.id;
-        }
-      }
-    }
-  } else if(i.done && (_isMoneyCueTask(i) || _taskBookedKeywordTask(i) || _suggestBudgetMatch(`${i.text||''} ${i.notes||''}`)) && !(STATE.settings && STATE.settings.hideBuyLinkPrompt) && !(STATE.settings && STATE.settings.suggestBudgetLinks===false)){
-    // Unlinked task just completed → offer to link it to the budget when it's
-    // money-related, a "booked" task, OR its name confidently matches an existing
-    // budget item/sub-item (so e.g. "Choose flowers" can suggest "Florals").
-    _showCompleteLinkPrompt(i.id);
-    // This prompt was opened by the tick, so × / Escape must revert the tick. The
-    // task has no budget link here, so the snapshot is task-only.
-    if(!document.getElementById('confirm2-overlay').classList.contains('hidden')){
-      _checkSnapshot=_preCheck;
-    }
+    _lkHandled=true;
+    // Booked badge always sits on the item (or its linked sub-item) — no placement question.
+    if(i.done && _taskBookedKeywordTask(i) && i.budgetId && i.bookedBadgePlacement===undefined
+       && _bookedPlacementOptions(_depTarget.b, _depTarget.s).length>1) i.bookedBadgePlacement=_depTarget.s?'sub':'item';
+    _linkedTaskTicked(i, _depTarget.b, _depTarget.s);
+  } else if(i.done && !i.notCost && (_isMoneyCueTask(i) || _taskBookedKeywordTask(i) || _suggestBudgetMatch(`${i.text||''} ${i.notes||''}`))
+            && !(STATE.settings && STATE.settings.hideBuyLinkPrompt) && !(STATE.settings && STATE.settings.suggestBudgetLinks===false)){
+    _lkHandled=true;
+    _unlinkedMoneyTicked(i);
   }
+  // Follow-up and unpin are lines in the sheet for these ticks, never pop-ups after it.
+  if(_lkHandled) return;
   // Catch-all: a task was just completed → offer to create a follow-up task
   // (gated by the Suggest Follow-up Tasks setting). If another prompt opened first,
   // defer the follow-up so it runs once that prompt is dismissed (chained, never stacked).
@@ -17015,7 +17167,325 @@ function _applyInvoiceDontAsk(){
 }
 let _batchDateCtx=null; // {prevDate, today, mode:'today'|'prev', applyDate(iso), revert(), previewB, previewS, previewKind}
 let _batchRevertCtx=null; // {revert()} — used by Cancel to undo the whole paid/unpaid toggle
+/* ══ v179 Linked checklist ↔ budget: one setting, three behaviours ══════════════
+   STATE.settings.linkedMode
+     1 = Automatic + Undo   — linked items update themselves; a toast says what changed
+                              (Undo / Change). Unlinked money tasks get an "Add to budget" chip.
+     2 = One sheet (default)— at most ONE pop-up per tick, every knock-on change as a
+                              tick-box, the likely ones pre-ticked.
+     3 = Automatic, ask about new costs — as 1 for linked items; an unlinked money task
+                              opens one short "Add to budget?" sheet.
+   Replaces the chain of up to five pop-ups per tick (deposit → balance task → booked
+   placement → invoice → follow-up). Only explicit pay/deposit tasks change money on
+   their own: ticking "Choose flowers" never marks Florals paid without asking. */
+function _linkedMode(){ const m=STATE.settings&&STATE.settings.linkedMode; return (m===1||m===3)?m:2; }
+function setLinkedMode(n){ if(!STATE.settings) STATE.settings={}; STATE.settings.linkedMode=n; saveToStorage(); navigate('settings'); }
+
+// ── Toast (same look as the undo-delete toast) ──────────────────────────────
+let _lkToastTimer=null, _lkUndoFn=null, _lkActFn=null;
+const _LK_TICK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+function _lkToast(msgHtml, opts){
+  opts=opts||{};
+  _lkCloseToast(true);
+  const wrap=document.getElementById('undo-toast-wrap'); if(!wrap) return;
+  _lkUndoFn=opts.undo||null; _lkActFn=opts.action?opts.action.fn:null;
+  const el=document.createElement('div');
+  el.className='undo-toast lk-toast'; el.id='lk-toast'; el.setAttribute('role','status');
+  el.innerHTML='<span class="ut-ico ok">'+_LK_TICK+'</span><span class="ut-msg">'+msgHtml+'</span>'
+    +(_lkActFn?'<span class="ut-div"></span><button class="ut-undo" onclick="_lkToastAct()">'+_escHtml(opts.action.label)+'</button>':'')
+    +(_lkUndoFn?'<span class="ut-div"></span><button class="ut-undo" onclick="_lkToastUndo()">Undo</button>':'')
+    +'<button class="ut-x" aria-label="Dismiss" onclick="_lkCloseToast()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+  wrap.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('in'));
+  _lkToastTimer=setTimeout(()=>_lkCloseToast(), 7000);
+}
+function _lkCloseToast(now){
+  clearTimeout(_lkToastTimer);
+  const el=document.getElementById('lk-toast'); if(!el) return;
+  el.id=''; el.classList.remove('in');
+  if(now) el.remove(); else setTimeout(()=>{ if(el.parentNode) el.remove(); }, 220);
+}
+function _lkToastUndo(){ const f=_lkUndoFn; _lkUndoFn=null; _lkCloseToast(); if(f) f(); }
+function _lkToastAct(){ const f=_lkActFn; _lkActFn=null; _lkCloseToast(); if(f) f(); }
+
+// ── Snapshot / restore for Undo ─────────────────────────────────────────────
+function _lkSnap(b, tasks){
+  return { bid:b?b.id:'', b:b?JSON.parse(JSON.stringify(b)):null,
+           tasks:(tasks||[]).filter(Boolean).map(t=>JSON.parse(JSON.stringify(t))) };
+}
+function _lkRestore(sn){
+  if(sn.b){ const b=STATE.budget.items.find(x=>x.id===sn.bid); if(b){ Object.keys(b).forEach(k=>delete b[k]); Object.assign(b, JSON.parse(JSON.stringify(sn.b))); } }
+  sn.tasks.forEach(ts=>{ const t=STATE.checklist.find(x=>x.id===ts.id); if(t){ Object.keys(t).forEach(k=>delete t[k]); Object.assign(t, JSON.parse(JSON.stringify(ts))); } });
+  saveToStorage(); if(typeof updateBudgetSummary==='function') updateBudgetSummary(); navigate(_currentPage);
+}
+
+// ── What a ticked linked task means for its payment ─────────────────────────
+// kind: 'deposit' | 'paid' | 'nodeposit' (a deposit task, but no deposit set up) | 'none'
+// auto: whether this change is clearly intended (an explicit pay/deposit/booked task).
+function _lkTaskPlan(task, b, s){
+  const done=!!task.done;
+  const hasDep=_targetHasDeposit(b, s);
+  const depPaid=hasDep ? !!_targetDepositPaid(b, s) : false;
+  const paid = s ? !!s.paid : !!b.paid;
+  const depWord=_taskDepositKeyword(task), soft=_taskSoftDepositKeyword(task), booked=_taskBookedKeywordTask(task);
+  const payTask=depWord || _isMoneyCueTask(task);
+  let kind='paid', auto=payTask;
+  if(depWord || soft){
+    if(hasDep) kind='deposit'; else if(depWord) kind=done?'nodeposit':'none';
+  } else if(booked){
+    // Booking means the deposit was paid — never the whole amount. Checked before the
+    // money test because "book" also counts as a buying word.
+    if(hasDep){ kind='deposit'; auto=true; } else { kind='none'; }
+  }
+  if(kind==='deposit' && depPaid===done) kind='none';
+  if(kind==='paid' && paid===done) kind='none';
+  const name = s ? `${b.name} › ${s.name}` : b.name;
+  const depAmt = s ? Number(s.deposit||0) : calcBudgetDeposit(b);
+  const owed = s ? Math.max(0, getSubItemAmount(s)-(s.depositPaid?Number(s.deposit||0):0)-calcSubInstallmentsPaid(s)) : calcBudgetBalance(b);
+  return { kind, auto, done, name, depAmt, owed, hasDep, payTask };
+}
+function _lkApplyPayment(b, s, kind, makePaid, date){
+  date=date||_todayISO();
+  if(kind==='deposit'){
+    const t=s||b; t.depositPaid=makePaid; if(makePaid) t.depositPaidDate=date;
+  } else if(kind==='paid'){
+    if(s){
+      s.paid=makePaid; s.manualPaid=makePaid;
+      if(makePaid){ s.paidDate=date; if(_budgetDepositUnpaid(b, s)){ s.depositPaid=true; if(!s.depositPaidDate) s.depositPaidDate=date; } }
+      const ab=(b.subItems||[]).filter(x=>getSubItemAmount(x)>0);
+      b.paid = ab.length>0 && ab.every(x=>x.paid);
+      if(b.paid && !b.balancePaidDate) b.balancePaidDate=date;
+    } else {
+      b.paid=makePaid;
+      if(makePaid){ b.balancePaidDate=date; if(_budgetDepositUnpaid(b, null)){ b.depositPaid=true; if(!b.depositPaidDate) b.depositPaidDate=date; } }
+    }
+  }
+}
+function _lkPayWords(P, makePaid){
+  const n=_escHtml(P.name);
+  if(P.kind==='deposit') return makePaid ? `<b>${n}</b> deposit marked paid` : `<b>${n}</b> deposit marked not paid`;
+  return makePaid ? `<b>${n}</b> marked paid` : `<b>${n}</b> marked not paid`;
+}
+
+// ── Entry point: a linked checklist task was ticked or unticked ─────────────
+function _linkedTaskTicked(task, b, s){
+  const P=_lkTaskPlan(task, b, s);
+  if(_linkedMode()===2) return _lkTaskSheet(task, b, s, P);
+  if(P.kind==='nodeposit'){
+    _lkToast(`<b>${_escHtml(P.name)}</b> has no deposit set up`, {action:{label:'Add deposit', fn:()=>{ _popupOrigin=_currentPage; _askAddSubDeposit(b, s, task); }}});
+    return;
+  }
+  if(P.kind==='none' || !P.auto) return;
+  const sn=_lkSnap(b, []);
+  _lkApplyPayment(b, s, P.kind, P.done, _todayISO());
+  saveToStorage(); updateBudgetSummary(); navigate(_currentPage);
+  _lkToast(_lkPayWords(P, P.done)+(P.done?' · today':''), {
+    undo:()=>_lkRestore(sn),
+    action: P.done ? {label:'Change', fn:()=>_lkChangeDialog(task.id, b.id, s?s.id:'', P.kind, sn)} : null });
+}
+
+// Change (from the toast): which payment, and the paid date.
+let _lkChg=null;
+function _lkChangeDialog(taskId, bid, sid, kind, sn){
+  const b=STATE.budget.items.find(x=>x.id===bid); if(!b) return;
+  const s=sid?b.subItems?.find(x=>x.id===sid):null;
+  _lkChg={taskId,bid,sid,sn};
+  const hasDep=_targetHasDeposit(b, s);
+  const name=_escHtml(s?`${b.name} › ${s.name}`:b.name);
+  const radio=(v,l,on)=>`<label class="lk-opt"><input type="radio" name="lk-chg-kind" value="${v}" ${on?'checked':''}/><span><span class="lk-ot">${l}</span></span></label>`;
+  const body=`<div class="lk-sheet">
+    ${hasDep?`<div class="lk-lbl">Which payment for ${name}?</div>${radio('deposit','The deposit',kind==='deposit')}${radio('paid','Paid in full',kind!=='deposit')}`:''}
+    <div class="lk-lbl" style="margin-top:${hasDep?'12px':'0'}">Paid on</div>
+    <input type="date" class="form-input" id="lk-chg-date" value="${_todayISO()}" style="max-width:190px"/>
+  </div>`;
+  openModal('Change payment', body, `<button class="btn btn-outline btn-sm" onclick="closeModalDirect()">Cancel</button><button class="btn btn-primary btn-sm" onclick="_lkChangeSave()">Save</button>`);
+}
+function _lkChangeSave(){
+  const c=_lkChg; _lkChg=null; if(!c){ closeModalDirect(); return; }
+  const k=(document.querySelector('input[name="lk-chg-kind"]:checked')||{}).value||'paid';
+  const d=(document.getElementById('lk-chg-date')||{}).value||_todayISO();
+  _lkRestore(c.sn);
+  const b=STATE.budget.items.find(x=>x.id===c.bid); const s=c.sid?b?.subItems?.find(x=>x.id===c.sid):null;
+  if(b) _lkApplyPayment(b, s, k, true, d);
+  saveToStorage(); updateBudgetSummary(); closeModalDirect(); navigate(_currentPage);
+}
+
+// ── The one sheet (mode 2) ──────────────────────────────────────────────────
+let _lkSheetCtx=null;
+function _lkLine(id, checked, title, sub, extraHtml){
+  return `<label class="lk-opt"><input type="checkbox" id="${id}" ${checked?'checked':''}/><span><span class="lk-ot">${title}</span>${sub?`<br><span class="lk-os">${sub}</span>`:''}${extraHtml||''}</span></label>`;
+}
+function _lkExtras(task){
+  const out=[];
+  if(task && task.done && !(STATE.settings && STATE.settings.suggestFollowUp===false))
+    out.push(_lkLine('lk-x-follow', false, 'Add a follow-up task', `“Follow up: ${_escHtml(task.text||'')}”`));
+  if(task && task.done && task.pinned && !(STATE.settings && STATE.settings.askUnpinOnComplete===false))
+    out.push(_lkLine('lk-x-unpin', true, 'Remove from the dashboard', 'It’s pinned there'));
+  return out;
+}
+function _lkApplyExtras(task){
+  if(!task) return;
+  if(document.getElementById('lk-x-follow')?.checked){
+    STATE.checklist.push({ id:'cl'+Date.now()+'f', text:`Follow up: ${(task.text||'').trim()}`, done:false, dueDate:'',
+      category:task.category||'', notes:'', pinned:false });
+  }
+  if(document.getElementById('lk-x-unpin')?.checked) task.pinned=false;
+}
+function _lkTaskSheet(task, b, s, P){
+  const lines=[];
+  if(P.kind==='deposit' || P.kind==='paid'){
+    const amt = P.kind==='deposit' ? P.depAmt : P.owed;
+    const title = P.done
+      ? (P.kind==='deposit' ? `Mark the deposit paid — ${fmt(amt)}` : `Mark ${_escHtml(s?s.name:b.name)} paid — ${fmt(amt)}`)
+      : (P.kind==='deposit' ? 'Mark the deposit as not paid' : `Mark ${_escHtml(s?s.name:b.name)} as not paid`);
+    const dateHtml = P.done ? `<span class="lk-date">Paid on <input type="date" id="lk-pay-date" value="${_todayISO()}"/></span>` : '';
+    lines.push(_lkLine('lk-pay', P.auto, title, P.auto?'':'This task doesn’t say it’s a payment, so it’s not ticked', dateHtml));
+  }
+  if(P.kind==='nodeposit') lines.push(_lkLine('lk-adddep', false, `Record a deposit for ${_escHtml(P.name)}`, 'No deposit is set up yet'));
+  if(P.done && P.kind==='deposit'){
+    const balOwed=Math.max(0, P.owed-P.depAmt);
+    const hasBalTask=STATE.checklist.some(t=>t.id!==task.id && t.budgetId===b.id && (t.budgetSubId||'')===(s?s.id:'') && !_taskDepositKeyword(t));
+    if(balOwed>0 && !hasBalTask) lines.push(_lkLine('lk-baltask', false, `Add a task to pay the balance — ${fmt(balOwed)}`, (s?s.balanceDueDate:b.balanceDueDate)?`Due ${fmtDate(s?s.balanceDueDate:b.balanceDueDate)}`:''));
+  }
+  if(P.done && (P.kind==='deposit' || P.kind==='paid')) lines.push(_lkLine('lk-invoice', false, 'Attach an invoice or receipt', 'Opens the item’s documents'));
+  _lkExtras(task).forEach(x=>lines.push(x));
+  if(!lines.length) return;
+  _lkSheetCtx={type:'task', taskId:task.id, bid:b.id, sid:s?s.id:'', kind:P.kind, done:!!task.done, label:task.text||''};
+  openModal(`${_escHtml(P.name)} — also update?`, `<div class="lk-sheet">${lines.join('')}</div>`,
+    `<button class="btn btn-primary btn-sm" onclick="_lkSheetSave()">Save</button>`);
+}
+/* × or Escape on a sheet asks whether to keep the tick (Mandy's choice, v179): the sheet
+   closes, then one small question — Undo the tick / Keep it. Nothing on the sheet is
+   applied either way. × on the question itself keeps the tick (the least destructive). */
+let _lkKeepCtx=null;
+function _lkAskKeep(){
+  const c=_lkSheetCtx; _lkSheetCtx=null; closeModalDirect(); navigate(_currentPage);
+  if(!c) return;
+  _lkKeepCtx=c;
+  const isPay=c.type==='pay';
+  const title = isPay ? 'Keep the payment change?' : (c.done ? 'Keep the task ticked?' : 'Keep the task unticked?');
+  const what = isPay
+    ? `<b>${_escHtml(c.label)}</b> is marked ${c.makeDone?'paid':'not paid'}.`
+    : `“${_escHtml(c.label)}” is ${c.done?'ticked':'unticked'}.`;
+  openModal(title, `<div style="font-size:13px;color:var(--ink);line-height:1.5">${what} Nothing else has changed.</div>`,
+    `<button class="btn btn-outline btn-sm" onclick="_lkKeepUndo()">${isPay?'Undo it':'Undo the tick'}</button><button class="btn btn-primary btn-sm" onclick="_lkKeepYes()">${isPay?'Keep it':(c.done?'Keep it ticked':'Keep it unticked')}</button>`);
+}
+function _lkKeepYes(){ _lkKeepCtx=null; closeModalDirect(); navigate(_currentPage); }
+function _lkKeepUndo(){
+  const c=_lkKeepCtx; _lkKeepCtx=null; closeModalDirect();
+  if(!c){ navigate(_currentPage); return; }
+  if(c.type==='pay'){
+    if(typeof c.revert==='function') c.revert();
+    saveToStorage(); if(typeof updateBudgetSummary==='function') updateBudgetSummary(); navigate(_currentPage);
+  } else {
+    // A silent re-toggle restores the task and the linked flags it set, and opens nothing.
+    toggleCheck(c.taskId, true);
+  }
+}
+function _lkSheetSkip(){ _lkSheetCtx=null; closeModalDirect(); navigate(_currentPage); }
+function _lkSheetSave(){
+  const c=_lkSheetCtx; _lkSheetCtx=null; if(!c){ closeModalDirect(); return; }
+  let after=null;
+  if(c.type==='task'){
+    const task=STATE.checklist.find(x=>x.id===c.taskId);
+    const b=STATE.budget.items.find(x=>x.id===c.bid); const s=c.sid?b?.subItems?.find(x=>x.id===c.sid):null;
+    if(task && b){
+      if(document.getElementById('lk-pay')?.checked){
+        const d=(document.getElementById('lk-pay-date')||{}).value||_todayISO();
+        _lkApplyPayment(b, s, c.kind, !!task.done, d);
+      }
+      if(document.getElementById('lk-baltask')?.checked){
+        const targetName=s?s.name:b.name;
+        STATE.checklist.push({id:'cl'+Date.now()+'b', text:`Pay balance — ${targetName}`, done:false,
+          dueDate:(s?s.balanceDueDate:b.balanceDueDate)||'', category:task.category||'', notes:'', pinned:false, budgetId:b.id, budgetSubId:s?s.id:''});
+      }
+      if(document.getElementById('lk-adddep')?.checked) after=()=>{ _popupOrigin=_currentPage; _askAddSubDeposit(b, s, task); };
+      if(document.getElementById('lk-invoice')?.checked) after=()=>{ s?openSubAttachments(b.id, s.id):openBudgetAttachments(b.id); };
+      _lkApplyExtras(task);
+    }
+  } else if(c.type==='pay'){
+    c.tasks.forEach((tid,ix)=>{ if(document.getElementById('lk-t-'+ix)?.checked){ const t=STATE.checklist.find(x=>x.id===tid); if(t) t.done=c.makeDone; } });
+    if(c.invoice && document.getElementById('lk-invoice')?.checked) after=()=>{ c.invoice.sid?openSubAttachments(c.invoice.bid, c.invoice.sid):openBudgetAttachments(c.invoice.bid); };
+  } else if(c.type==='unlinked'){
+    const task=STATE.checklist.find(x=>x.id===c.taskId);
+    const v=(document.querySelector('input[name="lk-u"]:checked')||{}).value||'';
+    if(task){
+      _lkApplyExtras(task);
+      if(v.startsWith('m')){
+        const m=c.matches[+v.slice(1)];
+        if(m){ STATE.budget.items.forEach(bb=>{ if(bb.checklistId===task.id) bb.checklistId=''; });
+               task.budgetId=m.bid; task.budgetSubId=m.sid||''; delete task._lkChip;
+               after=()=>_lkToast(`Linked to <b>${_escHtml(m.label)}</b>`); }
+      } else if(v==='pick'){ delete task._lkChip; after=()=>_completeLinkExisting(task.id); }
+      else if(v==='notcost'){ task.notCost=true; delete task._lkChip; }
+    }
+  }
+  saveToStorage(); if(typeof updateBudgetSummary==='function') updateBudgetSummary();
+  closeModalDirect(); navigate(_currentPage);
+  if(after) setTimeout(after, 60);
+}
+
+// ── Entry point: an unlinked task that sounds like a cost was ticked done ───
+function _unlinkedMoneyTicked(task){
+  if(_linkedMode()===1){ task._lkChip=true; saveToStorage(); navigate(_currentPage); return; }
+  _lkUnlinkedSheet(task.id);
+}
+function _lkUnlinkedSheet(taskId){
+  const task=STATE.checklist.find(x=>x.id===taskId); if(!task) return;
+  const matches=(typeof _suggestBudgetMatches==='function' ? _suggestBudgetMatches(`${task.text||''} ${task.notes||''}`, 2) : [])||[];
+  const radio=(v,t,sub,on)=>`<label class="lk-opt"><input type="radio" name="lk-u" value="${v}" ${on?'checked':''}/><span><span class="lk-ot">${t}</span>${sub?`<br><span class="lk-os">${sub}</span>`:''}</span></label>`;
+  const rows=matches.map((m,i)=>radio('m'+i, `Link to ${_escHtml(m.label)}`, i===0?'Suggested match':'', i===0)).join('')
+    + radio('pick', matches.length?'Choose another budget item…':'Choose a budget item…', 'Opens the task so you can pick or create one', !matches.length)
+    + radio('notcost', 'Not a cost', 'Stop suggesting this for this task', false);
+  const extras=_lkExtras(task).join('');
+  _lkSheetCtx={type:'unlinked', taskId, matches, done:true, label:task.text||''};
+  openModal('Add this to your budget?', `<div class="lk-sheet"><div class="lk-intro">“${_escHtml(task.text||'')}” sounds like a cost.</div>${rows}${extras?`<div class="lk-sep"></div>${extras}`:''}</div>`,
+    `<button class="btn btn-outline btn-sm" onclick="_lkSheetSkip()">Skip</button><button class="btn btn-primary btn-sm" onclick="_lkSheetSave()">Save</button>`);
+}
+function _lkChipHtml(i){
+  if(!i || !i._lkChip || i.budgetId || i.notCost) return '';
+  return `<button type="button" class="lk-chip cl-detail-wide" onclick="event.stopPropagation();_lkUnlinkedSheet('${i.id}')">+ Add to budget</button>`;
+}
+
+// ── Entry point: a payment was ticked/unticked in the Budget ────────────────
+// tasks: linked checklist tasks that may need to follow. Payment date is already set
+// by the caller (today); it can be changed on the payment row.
+function _lkPaymentChanged(tasks, makeDone, contextName, revertFn){
+  const invoice=_pendingInvoicePrompt; _pendingInvoicePrompt=null;
+  const seen=new Set();
+  const pending=(tasks||[]).filter(t=>t && !!t.done!==makeDone && !seen.has(t.id) && seen.add(t.id));
+  if(!pending.length) return;
+  if(_linkedMode()===2){
+    const lines=pending.map((t,ix)=>_lkLine('lk-t-'+ix, true, `${makeDone?'Tick':'Untick'} “${_escHtml(t.text||'')}”`, 'The linked checklist task'));
+    if(makeDone && invoice) lines.push(_lkLine('lk-invoice', false, 'Attach an invoice or receipt', 'Opens the item’s documents'));
+    _lkSheetCtx={type:'pay', tasks:pending.map(t=>t.id), makeDone, invoice, revert:revertFn||null, label:contextName||'Payment'};
+    openModal(`${_escHtml(contextName||'Payment')} — also update?`, `<div class="lk-sheet">${lines.join('')}</div>`,
+      `<button class="btn btn-primary btn-sm" onclick="_lkSheetSave()">Save</button>`);
+    return;
+  }
+  const sn=_lkSnap(null, pending);
+  pending.forEach(t=>{ t.done=makeDone; });
+  saveToStorage(); navigate(_currentPage);
+  const what = pending.length===1 ? `“${_escHtml(pending[0].text||'')}”` : `${pending.length} linked tasks`;
+  _lkToast(`Also ${makeDone?'ticked':'unticked'} ${what}`, {undo:()=>_lkRestore(sn)});
+}
+
+// ── Budget item ⋯ menu: Add balance task (replaces the pop-up that offered it) ──
+function _itemMenuAddBalanceTask(bid){
+  const b=STATE.budget.items.find(x=>x.id===bid); if(!b) return;
+  const text=`Pay balance — ${b.name}`;
+  if(STATE.checklist.some(t=>t.budgetId===bid && !t.budgetSubId && (t.text||'')===text)){ _lkToast(`“${_escHtml(text)}” is already on your checklist`); return; }
+  const t={id:'cl'+Date.now(), text, done:false, dueDate:b.balanceDueDate||'', category:'', notes:'', pinned:false, budgetId:bid, budgetSubId:''};
+  STATE.checklist.push(t); saveToStorage(); navigate(_currentPage);
+  _lkToast(`Added “${_escHtml(text)}” to your checklist`, {undo:()=>{ STATE.checklist=STATE.checklist.filter(x=>x.id!==t.id); saveToStorage(); navigate(_currentPage); }});
+}
+
+// v179: budget-side ticks now go through _lkPaymentChanged (one sheet / auto + Undo).
 function _askTaskDoneBatch(tasks, makeDone, contextName, dateCtx, revertCtx){
+  if(makeDone && dateCtx && typeof dateCtx.applyDate==='function') dateCtx.applyDate(_todayISO());
+  return _lkPaymentChanged(tasks, makeDone, contextName, (dateCtx&&dateCtx.revert)||(revertCtx&&revertCtx.revert)||null);
+}
+function _askTaskDoneBatch_LEGACY(tasks, makeDone, contextName, dateCtx, revertCtx){
   // Only tasks whose done-state differs from the target
   const pending=(tasks||[]).filter(t=>t && !!t.done!==makeDone);
   // De-dupe by id
@@ -17848,6 +18318,7 @@ let _ciAddDialogOpen=false;
 // The shared modal × routes here: defer to the draft-aware close for the Add dialog,
 // otherwise close normally (every other modal is unaffected).
 function _modalCloseX(){
+  if(_lkSheetCtx){ _lkAskKeep(); return; }
   if(_ciAddDialogOpen){ _ciMaybeDraftClose(); return; }
   // If the mark-paid / mark-done batch popup is open and carries a revert closure,
   // the × should undo the checkbox toggle just like Cancel does (otherwise checking an
@@ -20773,10 +21244,7 @@ function saveCheckitem(editId){
   // "Hillstone") with an existing Payment, even without a money cue.
   const _hasWordMatch = !!_suggestBudgetMatch(`${text||''} ${notes||''}`);
   const _suggestOn = !(STATE.settings && STATE.settings.suggestBudgetLinks===false);
-  if(_suggestOn && !_hasBudgetLink && !(STATE.settings && STATE.settings.hideBuyLinkPrompt) && !window._buyPromptBypass && (_hasMoneyCue || _hasWordMatch)){
-    _showBuyLinkPrompt(editId, _hasMoneyCue ? 'money' : 'match');
-    return;
-  }
+  // v179: no link pop-up on save — an unlinked money task is offered the budget when it's ticked.
   window._buyPromptBypass=false;
   if(editId){
     const i=STATE.checklist.find(x=>x.id===editId);
@@ -20800,16 +21268,7 @@ function saveCheckitem(editId){
     return;
   }
   window._apptPromptBypass=false;
-  // If the task carries a deposit keyword and links to a sub-item with no deposit,
-  // offer to set one up (this never marks the deposit paid — only configures it).
-  if(savedTask && budgetSubId && (_taskDepositKeyword(savedTask) || _ciSaveNewSub) && !_suppressSaveDepositPrompt){
-    _popupOrigin=_currentPage;
-    const b=STATE.budget.items.find(x=>x.id===budgetId);
-    const s=b?.subItems?.find(x=>x.id===budgetSubId);
-    if(b && s && !_targetHasDeposit(b, s) && !savedTask._noAskAddDeposit){
-      setTimeout(()=>_askAddSubDeposit(b, s, savedTask), 60);
-    }
-  }
+  // v179: no deposit pop-up on save. A deposit is recorded from the item, or from the tick sheet.
 }
 // Buy-keyword reminder prompt — stacks over the open Add Item dialog.
 // ── Unified link-prompt body builder (Streamline 03) ────────────────────────
@@ -22414,9 +22873,11 @@ function _catHeaderBlocks(b){
 
   // Shared "committed · over/left" and "paid · owing" lines (classic / minor styles)
   const commitLine=(allocMode&&committed>0)
-    ? `<span style="font-size:10.5px;color:${mut};white-space:nowrap">${fmt(committed)} committed · <span style="color:${remaining<0?red:grn}">${remaining<0?fmt(-remaining)+' over':fmt(remaining)+' left'}</span></span>` : '';
-  const paidLine=(showPaidOwing&&(paid>0||owing>0))
-    ? `<span style="font-size:10.5px;color:${mut};white-space:nowrap">${fmt(paid)} paid · ${fmt(owing)} owing</span>` : '';
+    ? `<span style="font-size:10.5px;color:${mut};white-space:nowrap">${fmt(committed)} committed · <span style="color:${remaining<0?red:grn}">${remaining<0?fmt(-remaining)+' over':fmt(remaining)+' unallocated'}</span></span>` : '';
+  // v182: Paid + Left to pay always shown (even $0); fully paid reads "Paid in full ✓".
+  const fullyPaid=owing<=0 && total>0;
+  const paidLine=showPaidOwing
+    ? `<span style="font-size:10.5px;color:${mut};white-space:nowrap">${fmt(paid)} paid · ${fullyPaid?`<span style="color:${grn};font-weight:600">Paid in full ✓</span>`:fmt(owing)+' left to pay'}</span>` : '';
 
   // Shared % of total sub-label — shown in all styles when totalMode='%' and toggle is on.
   // When % mode is on but no percentage is entered, auto-calculate from the
@@ -22438,7 +22899,7 @@ function _catHeaderBlocks(b){
       <span style="font-size:13px;font-weight:700;color:var(--ink);font-family:'Inter',sans-serif;white-space:nowrap">${val}${extra||''}</span></span>`;
     // Allocated renders flush-right inside the dots-menu column (see _catHeaderColAlloc), so 'right' stays empty.
     const c2=allocMode?cell('Committed', fmt(committed), over?` <span style="font-size:9.5px;color:${red};font-weight:600">·${fmt(-remaining)} over</span>`:''):'';
-    const c3=showPaidOwing?cell('Owing', fmt(owing), paid>0?` <span style="font-size:9.5px;color:${mut};font-weight:500">·${fmt(paid)} paid</span>`:''):'';
+    const c3=showPaidOwing?(cell('Paid', `<span style="color:${grn}">${fmt(paid)}</span>`)+(fullyPaid?cell('Left to pay', `<span style="color:${grn};font-size:11px">Paid in full ✓</span>`):cell('Left to pay', fmt(owing)))):'';
     const _pctBand=_pctSub?`<div style="display:flex;justify-content:flex-end;padding:0 16px 4px">${_pctSub}</div>`:'';
     const band=(c2||c3||_pctBand)?`<div style="display:flex;flex-direction:column">${(c2||c3)?`<div style="display:flex;justify-content:flex-end;gap:11px;padding:0 16px 6px">${c2}${c3}</div>`:''}${_pctBand}</div>`:'';
     return {right:'', band};
@@ -22453,8 +22914,8 @@ function _catHeaderBlocks(b){
     const owePct  = denom>0 ? Math.max(0,Math.min(100, owing/denom*100)) : 0;
     const restPct = Math.max(0, 100 - paidPct - owePct);
     const sw=(c)=>`<span style="width:7px;height:7px;border-radius:2px;background:${c};display:inline-block;flex-shrink:0"></span>`;
-    const legendPaid = paid>0 ? `<span style="display:inline-flex;align-items:center;gap:4px">${sw(grn)}<span style="color:${mut}">Paid</span> <span style="font-weight:700;color:var(--ink);font-family:'Inter',sans-serif">${fmt(paid)}</span></span>` : '';
-    const legendOwe  = (showPaidOwing&&owing>0) ? `<span style="display:inline-flex;align-items:center;gap:4px">${sw('var(--gold)')}<span style="color:${mut}">Owing</span> <span style="font-weight:700;color:var(--ink);font-family:'Inter',sans-serif">${fmt(owing)}</span></span>` : '';
+    const legendPaid = showPaidOwing ? `<span style="display:inline-flex;align-items:center;gap:4px">${sw(grn)}<span style="color:${mut}">Paid</span> <span style="font-weight:700;color:var(--ink);font-family:'Inter',sans-serif">${fmt(paid)}</span></span>` : '';
+    const legendOwe  = !showPaidOwing ? '' : fullyPaid ? `<span style="color:${grn};font-weight:600">Paid in full ✓</span>` : `<span style="display:inline-flex;align-items:center;gap:4px">${sw('var(--gold)')}<span style="color:${mut}">Left to pay</span> <span style="font-weight:700;color:var(--ink);font-family:'Inter',sans-serif">${fmt(owing)}</span></span>`;
     const legend = (legendPaid||legendOwe) ? `<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:9.5px;margin-top:5px">${legendPaid}${legendOwe}</div>` : '';
     const bar = `<div class="bi-splitbar" style="height:9px;border-radius:5px;overflow:hidden;display:flex;background:var(--surface)">
         <span style="width:${paidPct}%;background:${grn}"></span><span style="width:${owePct}%;background:var(--gold)"></span><span style="width:${restPct}%"></span></div>`;
@@ -22475,9 +22936,9 @@ function _catHeaderBlocks(b){
   // a single "left · owing" meta line. The structured successor to the old minimal line.
   if(style==='stack'){
     const meta=[];
-    if(over) meta.push(`<span style="color:${red}">${fmt(-remaining)} over</span>`); else if(allocMode&&committed>0) meta.push(`<span style="color:${grn}">${fmt(remaining)} left</span>`);
-    if(showPaidOwing&&owing>0) meta.push(`${fmt(owing)} owing`);
-    const metaLine=meta.length?`<span style="font-size:10px;color:${mut};white-space:nowrap">${meta.join(' · ')}</span>`:'';
+    if(over) meta.push(`<span style="color:${red}">${fmt(-remaining)} over</span>`); else if(allocMode&&committed>0) meta.push(`<span style="color:${grn}">${fmt(remaining)} unallocated</span>`);
+    const metaLine=(meta.length?`<span style="font-size:10px;color:${mut};white-space:nowrap">${meta.join(' · ')}</span>`:'')
+      +(showPaidOwing?`<span class="bi-stack-paid" style="font-size:10px;color:${mut};text-align:right"><span style="color:${grn};white-space:nowrap">${fmt(paid)} paid</span> · <span style="white-space:nowrap">${fullyPaid?`<span style="color:${grn};font-weight:600">Paid in full ✓</span>`:fmt(owing)+' left to pay'}</span></span>`:'');
     return {right:`<span style="display:inline-flex;flex-direction:column;align-items:flex-end;gap:0">${big(bigNum,17)}<span style="font-size:8.5px;color:${mut};text-transform:uppercase;letter-spacing:.08em">${headLabel.toLowerCase()}</span>${_pctSub}${metaLine}</span>`, band:''};
   }
 
@@ -22499,9 +22960,9 @@ function _catHeaderRailStats(b){
   const line=(l,v,c)=>`<span style="display:flex;justify-content:space-between;gap:10px;font-size:10px"><span style="color:${mut}">${l}</span><span style="font-weight:700;color:${c||'var(--ink)'};font-family:'Inter',sans-serif">${v}</span></span>`;
   const rows=[
     allocMode?line('Committed',fmt(committed)):'',
-    over?line('Over',fmt(-remaining),red):(allocMode?line('Left',fmt(remaining),grn):''),
-    showPaidOwing&&paid>0?line('Paid',fmt(paid),grn):'',
-    showPaidOwing&&owing>0?line('Owing',fmt(owing)):''
+    over?line('Over',fmt(-remaining),red):(allocMode?line('Unallocated',fmt(remaining),grn):''),
+    showPaidOwing?line('Paid',fmt(paid),grn):'',
+    showPaidOwing?((owing<=0&&total>0)?`<span style="display:flex;justify-content:flex-end;font-size:10px;font-weight:700;color:${grn}">Paid in full ✓</span>`:line('Left to pay',fmt(owing))):''
   ].join('');
   if(!rows) return '';
   // Mobile-only Allocated figure that nestles atop the stat column (Option C). The
@@ -22662,6 +23123,7 @@ function budgetItemHtml(b){
           ${_itemIsLinked(b)
             ? `<button onclick="closeDots();_openLinkMenu('budget','${b.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Manage link</button>`
             : `<button onclick="closeDots();_openLinkToChecklist('${b.id}','')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Link task</button>`}
+          <button onclick="closeDots();_itemMenuAddBalanceTask('${b.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add balance task</button>
           <button onclick="closeDots();openBudgetAttachments('${b.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> Documents${budgetAttachCount(b)?` (${budgetAttachCount(b)})`:''}</button>
           <button onclick="closeDots();_budgetAddVendor('${b.id}','')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h20v3a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M4 11v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9"/><path d="M9 21v-6h6v6"/></svg> Add vendor${_budgetVendorIds(b).length?` (${_budgetVendorIds(b).length})`:''}</button>
           ${b.subItems&&b.subItems.length>1?`<button onclick="closeDots();toggleSubReorder('${b.id}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> ${reorderingSubsFor.has(b.id)?'Done Reordering':'Reorder Sub-items'}</button>`:''}
@@ -23064,7 +23526,6 @@ function toggleBudgetPaid(id){
     // Merged pop-up: record paid date + offer to mark linked tasks done, in one step.
     if(!b.balancePaidDate) b.balancePaidDate=_todayISO();
     // Nothing linked to this item? Offer to link a matching checklist task first.
-    if(!_affected.length && _maybeSuggestBalanceLink(b, null)){ saveToStorage(); return; }
     const dateCtx = {
       prevDate: _hadPrevDate ? _snapshot.balancePaidDate : '',
       applyDate:(iso)=>{ b.balancePaidDate=iso; },
@@ -23164,93 +23625,175 @@ function _budgetBreakdownBtn(onclick, title){
 }
 
 function renderBudgetSummaryBody(){
+  /* v178: four figures — Committed, Paid, Left to pay (committed − paid: still owed for
+     what's booked) and Unallocated (budget − committed: money not yet assigned). Every
+     style renders two layouts: A (all four side by side, compact) for phones and B
+     (grouped by what each figure is measured against) for wider screens; CSS picks one
+     at the app's 560px mobile breakpoint (.bsum-a / .bsum-b). */
   const style=STATE.budget.summaryStyle||1;
-  const { totalCost, totalSpent, totalPaid, budgetTotal }=_budgetSummaryFigures();
-  const remaining=budgetTotal-totalCost;
-  const over=budgetTotal&&totalCost>budgetTotal;
-  const remColor=over?'var(--red)':'var(--ink)';
+  const { totalCost, totalPaid, budgetTotal }=_budgetSummaryFigures();
+  const F=_budgetFourFigures(totalCost, totalPaid, budgetTotal);
   const allocBtn=_budgetBreakdownBtn('openAllocatedSummary()','View committed breakdown');
   const depBtn=_budgetBreakdownBtn('openPaidSummary()','View payments (incl. deposits)');
+  const dueBtn=_budgetBreakdownBtn('openOwedSummary()','View what’s still owed');
   const serif="font-family:'Cormorant Garamond',serif";
+  const pct=(a,b)=>b>0?Math.max(0,Math.min(100,a/b*100)):0;
+  const base=Math.max(budgetTotal,totalCost);
+  const lbl=(t,btn,sw)=>`<span style="font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:5px;min-height:18px">${sw?`<span style="width:9px;height:9px;border-radius:2px;background:${sw};flex-shrink:0"></span>`:''}${t}${btn||''}</span>`;
+  const val=(v,c,size)=>`<span style="${serif};font-size:${size||18}px;font-weight:600;color:${c};line-height:1.15;white-space:nowrap">${v}</span>`;
+  const fig=(t,v,c,btn,sw)=>`<div style="min-width:0;display:flex;flex-direction:column;gap:2px">${lbl(t,btn,sw)}${val(v,c)}</div>`;
+  const gTitle=(t,v)=>`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">${t}</span>${val(v,'var(--ink)',15)}</div>`;
+  const G1='Your budget', G2='Of what’s committed';
+  const meter=(segs)=>`<div style="height:7px;border-radius:5px;background:var(--border);overflow:hidden;display:flex">${segs.map(s=>`<div style="width:${s[0]}%;background:${s[1]}"></div>`).join('')}</div>`;
+  const wrapAB=(a,b)=>`<div class="bsum-a">${a}</div><div class="bsum-b">${b}</div>`;
 
   if(style===2){
-    // Spent-vs-budget meter. Green = total paid (incl. installments); gold = remaining
-    // committed not yet paid.
-    const allocPct=budgetTotal?Math.min(100,Math.round(totalCost/budgetTotal*100)):0;
-    const depW=budgetTotal?Math.min(100,(totalPaid/budgetTotal*100)):0;
-    const allocW=budgetTotal?Math.min(100-depW,Math.max(0,(totalCost-totalPaid)/budgetTotal*100)):0;
-    return `<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
-        <span style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">${budgetTotal?`Allocated of ${fmt(budgetTotal)}`:'Allocated'}</span>
-        <span style="${serif};font-size:14px;font-weight:600;color:${remColor}">${budgetTotal?allocPct+'%':'—'}</span></div>
-      <div style="height:7px;border-radius:5px;background:var(--border);overflow:hidden;display:flex">
-        <div class="green-prog" style="width:${depW}%;background:var(--green)"></div><div class="gold-prog" style="width:${allocW}%;background:var(--gold)"></div></div>
-      <div style="display:flex;gap:10px;margin-top:6px;margin-bottom:-1px">
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
-          <div style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:var(--green);flex-shrink:0"></span><span style="font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Paid</span>${depBtn}</div>
-          <span style="${serif};font-size:18px;font-weight:600;color:var(--green);line-height:1">${fmt(totalPaid)}</span>
-        </div>
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
-          <div style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:var(--gold);flex-shrink:0"></span><span style="font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Committed</span>${allocBtn}</div>
-          <span style="${serif};font-size:18px;font-weight:600;color:var(--gold-deep);line-height:1">${fmt(totalCost)}</span>
-        </div>
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
-          <div style="display:flex;align-items:center;gap:5px"><span style="font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${over?'Over':'Remaining'}</span></div>
-          <span style="${serif};font-size:18px;font-weight:600;color:${remColor};line-height:1">${fmt(remaining)}</span>
-        </div>
-      </div>`;
+    const paidSeg=[pct(totalPaid,base),'var(--green)'], dueSeg=[pct(F.due,base),'var(--gold)'];
+    const a=`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;gap:8px">
+        ${lbl(budgetTotal?`Committed ${fmt(totalCost)} of ${fmt(budgetTotal)}`:'Committed')}
+        ${val(budgetTotal?Math.round(totalCost/budgetTotal*100)+'%':'—',F.over?'var(--red)':'var(--ink)',14)}</div>
+      ${meter([paidSeg,dueSeg])}
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:6px">
+        ${fig('Paid',fmt(totalPaid),'var(--green)',depBtn,'var(--green)')}${fig('Left to pay',fmt(F.due),'var(--gold-deep)',dueBtn,'var(--gold)')}${fig(F.remLbl,F.remVal,F.remColor,'')}</div>`;
+    const b=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div>${gTitle(G1,fmt(budgetTotal))}${meter([[pct(Math.min(totalCost,budgetTotal||totalCost),base),'var(--gold-deep)']].concat(F.over?[[pct(totalCost-budgetTotal,base),'var(--red)']]:[]))}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px">${fig('Committed',fmt(totalCost),'var(--ink)',allocBtn,'var(--gold-deep)')}${fig(F.remLbl,F.remVal,F.remColor,'')}</div></div>
+      <div>${gTitle(G2,fmt(totalCost))}${meter([[pct(totalPaid,totalCost),'var(--green)'],[pct(F.due,totalCost),'var(--gold)']])}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px">${fig('Paid',fmt(totalPaid),'var(--green)',depBtn,'var(--green)')}${fig('Left to pay',fmt(F.due),'var(--gold-deep)',dueBtn,'var(--gold)')}</div></div></div>`;
+    return wrapAB(a,b);
   }
 
   if(style===3){
-    // Labelled icon rows
     const bd='border-bottom:1px solid var(--border)';
-    const row=(icon,iconColor,lbl,val,vc,btn,last)=>`<div style="display:flex;align-items:center;gap:10px;padding:1.5px 0${last?' 0':''};${last?'':bd}">
+    const row=(icon,iconColor,t,v,vc,btn,last,sub)=>`<div style="display:flex;align-items:center;gap:10px;padding:1.5px 0${sub?';padding-left:22px':''};${last?'':bd}">
       <span style="color:${iconColor};display:inline-flex">${icon}</span>
-      <span style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);flex:1;display:inline-flex;align-items:center;gap:6px">${lbl}${btn?btn:''}</span>
-      <span style="${serif};font-size:18px;font-weight:600;color:${vc};line-height:1.25">${val}</span></div>`;
+      <span style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);flex:1;display:inline-flex;align-items:center;gap:6px">${t}${btn||''}</span>
+      ${val(v,vc)}</div>`;
     const icA='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>';
     const icD='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
+    const icO='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg>';
     const icR='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-    return `<div class="bsum-rows">`+row(icA,'var(--gold-deep)','Committed',fmt(totalCost),'var(--gold-deep)',allocBtn,false)
-      +row(icD,'var(--green)','Paid',fmt(totalPaid),'var(--green)',depBtn,false)
-      +row(icR,'var(--gold-deep)','Remaining',fmt(remaining),remColor,'',true)+`</div>`;
+    const rows=(indent)=>`<div class="bsum-rows">`+row(icA,'var(--gold-deep)','Committed',fmt(totalCost),'var(--ink)',allocBtn,false)
+      +row(icD,'var(--green)','Paid',fmt(totalPaid),'var(--green)',depBtn,false,indent)
+      +row(icO,'var(--gold-deep)','Left to pay',fmt(F.due),'var(--gold-deep)',dueBtn,false,indent)
+      +row(icR,'var(--gold-deep)',F.remLbl,F.remVal,F.remColor,'',true)+`</div>`;
+    return wrapAB(rows(false),rows(true));
   }
 
   if(style===4){
-    // Remaining ring + figures
-    const pctLeft=budgetTotal?Math.max(0,Math.round(remaining/budgetTotal*100)):0;
-    const circ=195; // 2*pi*31
-    const offset=budgetTotal?circ*(1-Math.max(0,Math.min(1,remaining/budgetTotal))):circ;
-    return `<div class="bsum-ring" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;min-width:0">
-      <svg width="44" height="44" viewBox="0 0 74 74" style="flex-shrink:0;margin-left:-2px">
+    const circ=195, p=base?totalPaid/base:0, d=base?F.due/base:0;
+    const pctFree=budgetTotal?Math.max(0,Math.round(F.rem/budgetTotal*100)):0;
+    const ring=`<svg width="44" height="44" viewBox="0 0 74 74" style="flex-shrink:0;margin-left:-2px" role="img" aria-label="Paid, left to pay and unallocated">
         <circle cx="37" cy="37" r="31" fill="none" stroke="var(--border)" stroke-width="8"/>
-        <circle cx="37" cy="37" r="31" fill="none" stroke="${over?'var(--red)':'var(--gold)'}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${offset}" transform="rotate(-90 37 37)"/>
-        <text x="37" y="35" text-anchor="middle" style="${serif};font-size:15px;font-weight:600;fill:var(--ink)">${budgetTotal?pctLeft+'%':'—'}</text>
-        <text x="37" y="47" text-anchor="middle" style="font-size:7px;fill:var(--muted);letter-spacing:.05em">LEFT</text>
-      </svg>
-      <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)">Remaining</div>
-        <div style="${serif};font-size:18px;font-weight:600;color:${remColor};white-space:nowrap">${fmt(remaining)}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)">Committed</div>
-        <div style="${serif};font-size:18px;font-weight:600;color:var(--gold-deep);white-space:nowrap">${fmt(totalCost)}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)">Paid</div>
-        <div style="${serif};font-size:18px;font-weight:600;color:var(--green);white-space:nowrap">${fmt(totalPaid)}</div>
-      </div></div>`;
+        <circle cx="37" cy="37" r="31" fill="none" stroke="var(--green)" stroke-width="8" stroke-dasharray="${(circ*p).toFixed(1)} ${circ}" transform="rotate(-90 37 37)"/>
+        <circle cx="37" cy="37" r="31" fill="none" stroke="${F.over?'var(--red)':'var(--gold)'}" stroke-width="8" stroke-dasharray="${(circ*d).toFixed(1)} ${circ}" stroke-dashoffset="${(-circ*p).toFixed(1)}" transform="rotate(-90 37 37)"/>
+        <text x="37" y="35" text-anchor="middle" style="${serif};font-size:15px;font-weight:600;fill:var(--ink)">${F.over?'Over':(budgetTotal?pctFree+'%':'—')}</text>
+        <text x="37" y="47" text-anchor="middle" style="font-size:6.5px;fill:var(--muted);letter-spacing:.04em">${F.over?'BUDGET':'UNALLOCATED'}</text>
+      </svg>`;
+    const a=`<div class="bsum-ring" style="display:flex;align-items:center;gap:12px;min-width:0">${ring}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;flex:1;min-width:0">${fig(F.remLbl,F.remVal,F.remColor)}${fig('Committed',fmt(totalCost),'var(--ink)')}${fig('Paid',fmt(totalPaid),'var(--green)')}${fig('Left to pay',fmt(F.due),'var(--gold-deep)')}</div></div>`;
+    const b=`<div class="bsum-ring" style="display:flex;align-items:center;gap:16px;min-width:0">${ring}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;min-width:0">
+        <div>${gTitle(G1,fmt(budgetTotal))}<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${fig('Committed',fmt(totalCost),'var(--ink)',allocBtn)}${fig(F.remLbl,F.remVal,F.remColor)}</div></div>
+        <div>${gTitle(G2,fmt(totalCost))}<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${fig('Paid',fmt(totalPaid),'var(--green)',depBtn)}${fig('Left to pay',fmt(F.due),'var(--gold-deep)',dueBtn)}</div></div></div></div>`;
+    return wrapAB(a,b);
   }
 
-  // Style 1 (default): three cards
-  const card=(lbl,val,c,btn)=>`<div class="bsum-card" style="background:var(--surface);border-radius:10px;padding:7px 8px;position:relative;min-width:0">
+  // Style 1 (default): cards
+  const card=(t,v,c,btn)=>`<div class="bsum-card" style="background:var(--surface);border-radius:10px;padding:7px 8px;position:relative;min-width:0">
     ${btn?`<span class="bsum-card-btn" style="position:absolute;top:6px;right:8px">${btn}</span>`:''}
-    <div class="bsum-card-lbl" style="font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.01em;margin-bottom:0;line-height:1.2;white-space:nowrap">${lbl}</div>
-    <div style="${serif};font-size:18px;font-weight:600;color:${c};line-height:1.15;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${val}</div></div>`;
-  return `<div class="bsum-cards-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px">
-    ${card('Committed',fmt(totalCost),'var(--gold-deep)',allocBtn)}
-    ${card('Paid',fmt(totalPaid),'var(--green)',depBtn)}
-    ${card('Remaining',fmt(remaining),remColor,'')}
-  </div>`;
+    <div class="bsum-card-lbl" style="font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.01em;margin-bottom:0;line-height:1.2;white-space:nowrap">${t}</div>
+    <div style="${serif};font-size:18px;font-weight:600;color:${c};line-height:1.15;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v}</div></div>`;
+  const cC=card('Committed',fmt(totalCost),'var(--ink)',allocBtn), cP=card('Paid',fmt(totalPaid),'var(--green)',depBtn),
+        cD=card('Left to pay',fmt(F.due),'var(--gold-deep)',dueBtn), cR=card(F.remLbl,F.remVal,F.remColor,'');
+  const a=`<div class="bsum-cards-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px">${cC}${cP}${cD}${cR}</div>`;
+  const b=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div>${gTitle(G1,fmt(budgetTotal))}<div class="bsum-cards-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:7px">${cC}${cR}</div></div>
+    <div>${gTitle(G2,fmt(totalCost))}<div class="bsum-cards-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:7px">${cP}${cD}</div></div></div>`;
+  return wrapAB(a,b);
+}
+
+/* The four budget figures, in one place, so the Budget page, both dashboard widgets and the
+   summary report can't drift apart again (they had three meanings of "remaining"). */
+function _budgetFourFigures(totalCost, totalPaid, budgetTotal){
+  const due=Math.max(0,(totalCost||0)-(totalPaid||0));
+  const rem=(budgetTotal||0)-(totalCost||0);
+  const over=(budgetTotal||0)>0 && rem<0;
+  return { due, rem, over,
+    remLbl: over?'Over budget':'Unallocated',
+    remVal: fmt(over?-rem:rem),
+    remColor: over?'var(--red)':'var(--ink)' };
+}
+
+/* What's still owed — every unpaid amount, from the same per-item balance as Left to pay
+   (calcBudgetBalance), so the list always adds up to the figure that opened it. Each item's
+   balance is split into its known payments (unpaid deposit, unpaid instalments, sub-item
+   balances) with their due dates; if that split doesn't reconcile to the item's balance —
+   e.g. an item-level deposit paid against sub-items — the item falls back to one line. */
+function _budgetOwedRows(){
+  const rows=[];
+  (STATE.budget.items||[]).forEach(b=>{
+    const owed=calcBudgetBalance(b); if(owed<=0) return;
+    const name=b.name||'Untitled'; const pieces=[];
+    const subs=(b.subItems||[]);
+    if(!subs.length){
+      const dep=(!b.depositFromSubs && !b.depositPaid)?Number(b.deposit||0):0;
+      if(dep>0) pieces.push({label:'Deposit',amt:Math.min(dep,owed),date:b.depositDueDate||''});
+      const rest=owed-(dep>0?Math.min(dep,owed):0);
+      if(rest>0) pieces.push({label:dep>0?'Balance':'Payment',amt:rest,date:b.balanceDueDate||''});
+    } else {
+      subs.forEach(s=>{
+        if(s.paid && !s._planHolder) return;
+        const sn=s.name||'Sub-item';
+        const insts=(s.installments||[]).filter(i=>i&&!i.paid);
+        insts.forEach((i,k)=>pieces.push({label:`${s._planHolder?'':sn+' · '}${i.label||('Instalment '+(k+1))}`,amt:Number(i.amount||0),date:i.dueDate||''}));
+        if(s._planHolder) return;
+        const amt=getSubItemAmount(s);
+        const paidSoFar=(s.depositPaid?Number(s.deposit||0):0)+calcSubInstallmentsPaid(s);
+        const unpaidInst=insts.reduce((t,i)=>t+Number(i.amount||0),0);
+        let left=Math.max(0,amt-paidSoFar-unpaidInst);
+        const dep=(!s.depositPaid)?Number(s.deposit||0):0;
+        if(dep>0 && left>0){ const d=Math.min(dep,left); pieces.push({label:`${sn} · deposit`,amt:d,date:s.depositDueDate||''}); left-=d; }
+        if(left>0) pieces.push({label:`${sn} · balance`,amt:left,date:s.balanceDueDate||''});
+      });
+    }
+    const sum=pieces.reduce((t,p)=>t+p.amt,0);
+    if(Math.abs(sum-owed)>0.005) rows.push({item:name,label:'Balance',amt:owed,date:b.balanceDueDate||''});
+    else pieces.forEach(p=>rows.push(Object.assign({item:name},p)));
+  });
+  return rows;
+}
+function openOwedSummary(){
+  const rows=_budgetOwedRows();
+  const today=new Date(); today.setHours(0,0,0,0);
+  const isOver=d=>d && new Date(d+'T00:00:00')<today;
+  const dated=rows.filter(r=>r.date).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+  const undated=rows.filter(r=>!r.date);
+  const total=rows.reduce((t,r)=>t+r.amt,0);
+  let body;
+  if(!rows.length){
+    body=`<div style="text-align:center;padding:28px 16px;color:var(--muted)">
+      <div style="font-size:14px">Nothing left to pay.</div>
+      <div style="font-size:12.5px;margin-top:6px">Everything you've committed has been paid.</div></div>`;
+  } else {
+    const line=r=>{ const od=isOver(r.date);
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${od?'var(--red)':'var(--gold-deep)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;color:var(--ink);font-weight:500">${_escHtml(r.item)}</div>
+          <div style="font-size:11.5px;color:var(--muted)">${_escHtml(r.label)} &middot; ${r.date?(od?`<span style="color:var(--red);font-weight:600">Overdue &middot; was due ${fmtDate(r.date)}</span>`:`Due ${fmtDate(r.date)}`):'No due date'}</div>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:${od?'var(--red)':'var(--gold-deep)'};font-family:'Inter',sans-serif;flex-shrink:0">${fmt(r.amt)}</div></div>`; };
+    body=`<div>
+      <div style="font-size:12.5px;color:var(--muted);padding:0 4px 6px">${rows.length} payment${rows.length!==1?'s':''} still owed, soonest first</div>
+      ${dated.map(line).join('')}
+      ${undated.length?`<div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:14px 4px 4px">No due date</div>${undated.map(line).join('')}`:''}
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 4px 2px;margin-top:2px">
+        <span style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600">Total left to pay</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold-deep)">${fmt(total)}</span>
+      </div></div>`;
+  }
+  openModal('Left to pay', body, `<button class="btn btn-primary" onclick="closeModalDirect()">Done</button>`);
 }
 
 function setBudgetStyle(n){
@@ -23320,17 +23863,12 @@ function toggleDepositPaid(id){
   const _finish=()=>{
     updateBudgetSummary(); navigate(_popupReturn());
     _armEscapeRevert(()=>{ Object.keys(b).forEach(k=>delete b[k]); Object.assign(b,_snap); saveToStorage(); updateBudgetSummary(); navigate(_popupReturn()); });
-    if(b.depositPaid){ if(!_maybeSuggestDepositLink(b, null)) _maybeAskTaskDone(b, null, true); }
-    else { if(!_askDepositUncheckCascade(b, null)) _maybeAskTaskDone(b, null, false); }
+    _lkPaymentChanged([_findPayDepositTask(b, null)], !!b.depositPaid, b.name+' deposit', ()=>{ Object.keys(b).forEach(k=>delete b[k]); Object.assign(b,_snap); });
     _escapeRevertArm=false;
     if(document.getElementById('modal-overlay').classList.contains('hidden')) _escapeRevert=null;
   };
   if(b.depositPaid){
-    if(_hadPrev){
-      _askPaidDateChoice(b.name+' (deposit)', b.depositPaidDate, (chosen)=>{ b.depositPaidDate=chosen; _finish(); });
-      return;
-    }
-    if(!b.depositPaidDate) b.depositPaidDate=_todayISO();
+    b.depositPaidDate=_todayISO(); // v179: today; change it on the row if needed
   }
   _finish();
 }
@@ -23462,7 +24000,6 @@ function toggleSubPaid(pid,sid){
     updateBudgetSummary(); navigate(_popupReturn());
     const _st=STATE.checklist.find(ci=>ci.budgetId===b.id&&ci.budgetSubId===s.id);
     // Sub-item marked paid with nothing linked? Offer to link a matching task first.
-    if(s.paid && !_st && _maybeSuggestBalanceLink(b, s)){ saveToStorage(); return; }
     const _dateCtx = (s.paid) ? {
       prevDate: _hadPrevDate ? _snapshot.subItems.find(x=>x.id===sid)?.paidDate||'' : '',
       applyDate:(iso)=>{ s.paidDate=iso; },
@@ -23490,17 +24027,12 @@ function toggleSubDepositPaid(pid,sid){
   const _finish=()=>{
     updateBudgetSummary(); navigate(_popupReturn());
     _armEscapeRevert(()=>{ Object.keys(s).forEach(k=>delete s[k]); Object.assign(s,_snap); saveToStorage(); updateBudgetSummary(); navigate(_popupReturn()); });
-    if(s.depositPaid){ if(!_maybeSuggestDepositLink(b, s)) _maybeAskTaskDone(b, s, true); }
-    else { if(!_askDepositUncheckCascade(b, s)) _maybeAskTaskDone(b, s, false); }
+    _lkPaymentChanged([_findPayDepositTask(b, s)], !!s.depositPaid, `${b.name} › ${s.name} deposit`, ()=>{ Object.keys(s).forEach(k=>delete s[k]); Object.assign(s,_snap); });
     _escapeRevertArm=false;
     if(document.getElementById('modal-overlay').classList.contains('hidden')) _escapeRevert=null;
   };
   if(s.depositPaid){
-    if(_hadPrev){
-      _askPaidDateChoice(`${b.name} › ${s.name} (deposit)`, s.depositPaidDate, (chosen)=>{ s.depositPaidDate=chosen; _finish(); });
-      return;
-    }
-    if(!s.depositPaidDate) s.depositPaidDate=_todayISO();
+    s.depositPaidDate=_todayISO(); // v179: today; change it on the row if needed
   }
   _finish();
 }
@@ -23715,7 +24247,6 @@ const _BUDGET_HIDE_SECTIONS=[
   {key:'summary', label:'Budget Summary', group:'top'},
   {key:'catIcon', label:'Category Icon', group:'top'},
   {key:'pctLabel', label:'Show % of total label', group:'top'},
-  {key:'invoicePrompt', label:'Invoice / receipt request pop-up', group:'Pop ups & Prompts'},
   {key:'balDate', label:"Remaining Balance", group:'Dates'},
   {key:'depDate', label:"Deposits", group:'Dates'},
   {key:'subDate', label:"Sub-item", group:'Dates'}
@@ -23846,7 +24377,7 @@ function _budgetOptionsMenuHtml(){
       <button onclick="_budgetOptionsReset()" style="background:none;border:none;color:var(--gold-deep);cursor:pointer;font-size:10px;text-decoration:underline;font-family:inherit;padding:0">Reset</button>
     </div>
     ${top.map(_budgetCheckRow).join('')}
-    ${heading('Pop ups & Prompts')}${prompts.map(_budgetCheckRow).join('')}
+    ${prompts.length?heading('Pop ups & Prompts')+prompts.map(_budgetCheckRow).join(''):''}
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:11px 0 4px">
       <div style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-deep)">Dates</div>
       <span style="display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-deep)">Paid
@@ -25797,8 +26328,8 @@ let _seatingCounts=true;
 // can land a launch late — and there was previously NO way to tell which build was
 // actually running. Diagnosing "I uploaded it but nothing changed" meant hunting for
 // whether a feature happened to appear. Bump this with every release.
-const APP_BUILD='v176';
-const APP_BUILD_DATE='2026-09-30';
+const APP_BUILD='v182';
+const APP_BUILD_DATE='2026-10-19';
 function _seatingPrintHtml(forPreview){
   const ev=STATE.event||{};
   const p1=_escHtml(ev.partner1||'Partner'), p2=_escHtml(ev.partner2||'Partner');
@@ -25952,7 +26483,11 @@ function _seatingPrintHtml(forPreview){
       const g=STATE.guests.find(x=>x.id===gid);
       const nm=g?_escHtml(g.name):'(unknown)';
       const crown=heads.has(gid)?' <span class="sp-crown">♔</span>':'';
-      const diet=(g&&g.dietary&&g.dietary.length)?` <span class="sp-diet">${_escHtml(g.dietary.join(', '))}</span>`:'';
+      // Allergies print bold capitals as well as red, so they survive the B&W print.
+      const _dn=(g&&g.dietary||[]).filter(d=>d!=='allergy');
+      const _at=_hasAllergy(g)?_allergyText(g):'';
+      const diet=(_dn.length?` <span class="sp-diet">${_escHtml(_dn.map(d=>d==='other'&&_otherText(g)?'other ('+_otherText(g)+')':d).join(', '))}</span>`:'')
+        +(_hasAllergy(g)?` <span class="sp-al">ALLERGY${_at?': '+_escHtml(_at.toLowerCase()):''}</span>`:'');
       return `<li>${nm}${crown}${diet}</li>`;
     }).join('');
     const empty=ids.length?'':'<li class="sp-empty">— empty —</li>';
@@ -26023,6 +26558,7 @@ const _SEATING_PRINT_CSS=`
   .sp-tcard li{padding:1px 0}
   .sp-crown{color:#9A7B2E;font-size:12px}
   .sp-diet{color:#9A9389;font-size:10.5px;font-style:italic}
+  .sp-al{color:#A8322A;font-size:10.5px;font-weight:700;letter-spacing:.02em}
   .sp-empty{color:#B4AFA4;font-style:italic;list-style:none;margin-left:-12px}
   .sp-unassigned{border-style:dashed;background:#FBF8F3}
   .sp-foot{text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;color:#B4AFA4;font-size:12px;margin-top:26px;padding-top:14px;border-top:1px solid #E7DECF}
@@ -26062,6 +26598,7 @@ const _SEATING_PRINT_CSS=`
      make seat pips outline-only (no fill). Only applies when .sp-doc carries .bw. ── */
   .sp-doc.bw{--gold:#7c7c7c;--gold-deep:#7c7c7c;--green:#7c7c7c;--red:#7c7c7c;--muted:#666;--border:#999;--surface:#fff;--parchment:#f2f2f2}
   .sp-doc.bw .sp-title{color:#555}
+  .sp-doc.bw .sp-al{color:#000}
   .sp-doc.bw .sp-section-label{color:#555;border-bottom-color:#bbb}
   .sp-doc.bw .sp-floor-wrap,.sp-doc.bw .sp-floor-scroll{background:transparent!important;border:none!important}
   /* Catch-all: neutralise any hardcoded colours inside the plan (e.g. decor zone
@@ -26977,6 +27514,7 @@ function _seatStickyBar(layout){
     <span class="dk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15 L12 5 L22 15 L2 15 Z"/><path d="M2 15 L22 15 L22 20 L2 20 Z"/><circle cx="16" cy="12" r="1.5" fill="var(--gold-deep)" stroke="none"/><circle cx="9" cy="17" r="1.5" fill="var(--gold-deep)" stroke="none"/><line x1="4" y1="4" x2="20" y2="20"/></svg>Lactose free</span>
     <span class="dk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 22 Q11 15 12 3 M12 18 Q9 17 9.5 14.5 Q12 13.5 12.5 16 Q12.5 17.5 12 18 M12 14.5 Q9 13.5 9.5 11 Q12 10 12.5 12.5 Q12.5 14 12 14.5 M12 11 Q9 10 9.5 7.5 Q12 6.5 12.5 9 Q12.5 10.5 12 11 M12 7.5 Q9.5 6.5 10 5 Q12 4 12.5 6 Q12.5 7 12 7.5 M12.5 16 L16 14.5 M12.5 12.5 L16 11 M12.5 9 L16 7.5 M12.5 6 L15 4.5 M9.5 14.5 L6 13 M9.5 11 L6 9.5 M9.5 7.5 L6 6 M10 5 L7.5 3.5 M4 4 L20 20"/></svg>Gluten-free</span>
     <span class="dk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Other</span>
+    <span class="dk"><span class="diet-ico-al" style="display:inline-flex"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" title="Allergy"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>Allergy</span>
   </div>`;
   const row=`<div class="seat-stickybar-row">
     ${search}
@@ -35014,7 +35552,7 @@ function _evGuestListCard(ev){
     return vis.map((g,i)=>{
       const st=rsvps[g.id]||'awaiting'; const m=CFG[st]||CFG.awaiting;
       const bd=m.bd?`border:${m.bd};`:'border:none;';
-      const sub=[g.relationship,g.dietary].filter(Boolean).map(_esc).join(' \u00b7 ');
+      const sub=[g.relationship,(g.dietary&&g.dietary.length)?_dietText(g):''].filter(Boolean).map(_esc).join(' \u00b7 ');
       let brk='';
       if(isGrp){
         const t=i===0?`border-top:2px solid ${col};border-top-left-radius:3px;`:'';
@@ -35516,8 +36054,8 @@ function renderSettings(c, actions){
       </div>
       <div class="dark-toggle-row" style="margin-bottom:16px">
         <div>
-          <div style="font-size:13.5px;font-weight:500">Show Paid / Owing on Budget Categories</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">Add a small paid &amp; owing line under each category amount.</div>
+          <div style="font-size:13.5px;font-weight:500">Show Paid / Left to pay on Budget Categories</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Show how much of each category is paid and how much is left to pay.</div>
         </div>
         <label class="toggle-switch">
           <input type="checkbox" ${!STATE.settings.hideBudgetPaidOwing?'checked':''} onchange="STATE.settings.hideBudgetPaidOwing=!this.checked;saveToStorage();if(_currentPage==='budget')navigate('budget')"/>
@@ -35555,15 +36093,16 @@ function renderSettings(c, actions){
           <div class="toggle-track"></div>
         </label>
       </div>
-      <div class="dark-toggle-row" style="margin-bottom:16px">
-        <div>
-          <div style="font-size:13.5px;font-weight:500">Suggest Deposits</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:2px">When you complete a task linked to a payment with no deposit, offer to add one.</div>
+      <div style="margin-bottom:18px">
+        <div style="font-size:13.5px;font-weight:500">When you tick linked checklist and budget items</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">What happens when a task and a payment are linked, or a task sounds like a cost.</div>
+        <div class="lk-mode-opts">
+          ${[[1,'Automatic + Undo','Linked items update by themselves. A short message says what changed, with Undo. Unlinked money tasks show a small “Add to budget” chip.'],
+             [2,'One sheet','One short pop-up lists anything else that could change, with the likely ones ticked. Pick, then Save.'],
+             [3,'Automatic, ask about new costs','Linked items update by themselves, with Undo. Ticking an unlinked money task opens one short sheet to add it to your budget.']]
+            .map(o=>`<button type="button" class="lk-mode-opt${_linkedMode()===o[0]?' sel':''}" onclick="setLinkedMode(${o[0]})" aria-pressed="${_linkedMode()===o[0]}"><span class="lk-mn">Option ${o[0]}</span><span class="lk-mt">${o[1]}</span><span class="lk-md">${o[2]}</span></button>`).join('')}
         </div>
-        <label class="toggle-switch">
-          <input type="checkbox" ${!STATE.settings.hideAddDepositPrompt?'checked':''} onchange="STATE.settings.hideAddDepositPrompt=!this.checked;saveToStorage()"/>
-          <div class="toggle-track"></div>
-        </label>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:8px">Balance tasks and invoices are always in the item’s ⋯ menu. The Booked badge always shows on the item.</div>
       </div>
 
       <div style="margin-bottom:8px">
@@ -35835,7 +36374,7 @@ const _SETTINGS_PAGE_MAP={
   'Checklist Alert Icon in Menu':'checklist',
   'Ceremony Details':'details',
   'Show Year on Budget Dates':'budget',
-  'Show Paid / Owing on Budget Categories':'budget',
+  'Show Paid / Left to pay on Budget Categories':'budget',
   'Auto-mark passed installments paid':'budget',
   'Set “Due Soon” Alert':'budget',
   'Countdown Format':'general',
@@ -36475,6 +37014,19 @@ let _pendingImportGuests = [];
 // top with a NEW badge. Session/visual only (not saved to STATE); cleared on leaving Guests.
 let _newlyImportedIds = new Set();
 
+/* A dietary cell from an import. Split into entries (after "Allergy:" the rest of that
+   segment is the allergy list, so its commas stay with it), then normalised to the app's keys
+   by _normaliseDiet — recognised words tick their box, unknown words become Other + detail. */
+function _importDiet(cell){
+  const entries=[];
+  String(cell).split(/[;|]/).map(x=>x.trim()).filter(Boolean).forEach(part=>{
+    const mm=part.match(/^(.*?)\b(?:allerg(?:y|ies|ic)(?:\s+to)?|anaphyla\w*)\s*:\s*(.+)$/i);
+    if(mm){ mm[1].split(',').map(t=>t.trim()).filter(Boolean).forEach(t=>entries.push(t));
+            mm[2].split(',').map(t=>t.trim()).filter(Boolean).forEach(t=>entries.push(t+' allergy')); }
+    else part.split(',').map(t=>t.trim()).filter(Boolean).forEach(t=>entries.push(t));
+  });
+  return _normaliseDiet(entries);
+}
 function applyGuestImport(){
   const mapping = _importHeaders.map((_,i)=>document.getElementById(`col-map-${i}`)?.value||'skip');
   function colVal(row,key){ const idx=mapping.indexOf(key); return idx>=0?(row[idx]||'').trim():''; }
@@ -36534,7 +37086,7 @@ function applyGuestImport(){
     const imported={id:uid(),name,prefix:colVal(row,'prefix')||'',isDuplicate,existingId:existingGuest?.id||null,
       rsvp:parseRsvp(colVal(row,'rsvp')),phone:colVal(row,'phone'),email:colVal(row,'email'),
       address:colVal(row,'address'),handle:colVal(row,'handle')||'',relationship:colVal(row,'relationship')||'',
-      dietary:(colVal(row,'dietary')||'').split(/[,;|]/).map(d=>d.trim()).filter(Boolean),
+      ...(_importDiet(colVal(row,'dietary')||'')),
       tags:(()=>{const base=(colVal(row,'tags')||'').split(/[,;|]/).map(t=>t.trim()).filter(Boolean);const side=normaliseSide(colVal(row,'side'));if(side&&!base.includes(side))base.push(side);return base;})(),
       skip:isDuplicate,action:isDuplicate?'skip':'add',updateFields:{}};
     if(existingGuest){
@@ -36629,8 +37181,8 @@ function finaliseGuestImport(skipped=0){
       }
       return;
     }
-    const{id,name,prefix,rsvp,phone,email,address,handle,relationship,dietary,tags}=g;
-    STATE.guests.push({id,name,prefix:prefix||'',rsvp,dietary,tags,phone,email,address,handle:handle||'',handlePlatform:(handle||'').trim()?'instagram':undefined,relationship:relationship||'Guest',coupleId:null,plusOneId:null,plusOne:false,isMain:true,notes:'',listType:'A'});
+    const{id,name,prefix,rsvp,phone,email,address,handle,relationship,dietary,tags,allergens,allergyNote,dietOther}=g;
+    STATE.guests.push({id,name,prefix:prefix||'',rsvp,dietary,tags,allergens:allergens||[],allergyNote:allergyNote||'',dietOther:dietOther||'',phone,email,address,handle:handle||'',handlePlatform:(handle||'').trim()?'instagram':undefined,relationship:relationship||'Guest',coupleId:null,plusOneId:null,plusOne:false,isMain:true,notes:'',listType:'A'});
     _newlyImportedIds.add(id); addedIds.push(id);
     added++;
   });
@@ -38486,12 +39038,12 @@ function _budgetSummaryListHtml(d){
       <span style="font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.08em;font-weight:600">Paid to date</span>
       <span style="${serif};font-size:17px;font-weight:600;color:var(--green);font-variant-numeric:tabular-nums">${fmt(d.grandPaid)}</span></div>
     <div style="display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600">Outstanding</span>
-      <span style="${serif};font-size:17px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums">${fmt(d.grandOutstanding)}</span></div>`;
+      <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600">Left to pay</span>
+      <span style="${serif};font-size:17px;font-weight:600;color:var(--gold-deep);font-variant-numeric:tabular-nums">${fmt(d.grandOutstanding)}</span></div>`;
   if(d.budgetTotal){
     h+=`<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);margin-top:1px;padding-top:8px">
-      <span style="font-size:11px;color:var(--ink);text-transform:uppercase;letter-spacing:.08em;font-weight:700">${d.over?'Over budget':'Remaining of budget'}</span>
-      <span style="${serif};font-size:20px;font-weight:700;color:${d.over?'var(--red)':'var(--ink)'};font-variant-numeric:tabular-nums">${fmt(d.remaining)}</span></div>`;
+      <span style="font-size:11px;color:var(--ink);text-transform:uppercase;letter-spacing:.08em;font-weight:700">${d.over?'Over budget':'Unallocated'}</span>
+      <span style="${serif};font-size:20px;font-weight:700;color:${d.over?'var(--red)':'var(--ink)'};font-variant-numeric:tabular-nums">${fmt(Math.abs(d.remaining))}</span></div>`;
   }
   h+=`</div>`;
   return h;
@@ -38877,7 +39429,7 @@ function _exportGuestCellValue(g, key, tableOf, invitedIds){
   if(key==='email') return g.email||'';
   if(key==='address') return g.address||'';
   if(key==='tags') return (g.tags&&g.tags.length)?g.tags.join(', '):'';
-  if(key==='dietary') return (g.dietary&&g.dietary.length)?g.dietary.map(d=>d.charAt(0).toUpperCase()+d.slice(1)).join(', '):'';
+  if(key==='dietary') return (g.dietary&&g.dietary.length)?g.dietary.map(d=>(d==='allergy'||d==='other')?_dietWord(g,d,'paren'):d.charAt(0).toUpperCase()+d.slice(1)).join(', '):'';
   if(key==='invited') return invitedIds&&invitedIds.has(g.id)?'Yes':'No';
   if(key==='rsvp'){
     const s=g.rsvp==='attending'?'Attending':g.rsvp==='declined'?'Declined':'Awaiting';
@@ -39061,7 +39613,7 @@ function _exportBudgetInner(){
   const money=(typeof fmt==='function')?fmt:(n)=>'$'+Math.round(n||0).toLocaleString();
   const over=f.budgetTotal&&f.totalCost>f.budgetTotal;
   const r=(k,v,col)=>`<tr class="x-row"><td>${k}</td><td class="x-r" style="${col?'color:'+col:''}">${money(v)}</td></tr>`;
-  let body=`<table>${r('Total budget',f.budgetTotal)}${r('Committed / allocated',f.totalCost)}${r('Paid',f.totalPaid,'#5C8A4E')}${r(over?'Over budget by':'Remaining',Math.abs(remaining),over?'#A23B1E':'')}</table>`;
+  let body=`<table>${r('Total budget',f.budgetTotal)}${r('Committed',f.totalCost)}${r('Paid',f.totalPaid,'#5C8A4E')}${r('Left to pay',Math.max(0,f.totalCost-f.totalPaid))}${r(over?'Over budget by':'Unallocated',Math.abs(remaining),over?'#A23B1E':'')}</table>`;
   // Per-item breakdown
   const items=STATE.budget.items||[];
   if(items.length){
@@ -40912,6 +41464,19 @@ function loadFromStorage(){
     (STATE.guests||[]).forEach(g=>{
       if(g && (g.handle||'').trim() && !g.handlePlatform) g.handlePlatform='instagram';
     });
+    // v177: dietary entries that aren't app keys (raw text from older CSV imports) are
+    // normalised once — recognised words to their tick-box, the rest to Other + its words,
+    // merged with anything already there. Guests holding only app keys are untouched, so
+    // this is idempotent.
+    if(typeof _normaliseDiet==='function') (STATE.guests||[]).forEach(g=>{
+      if(!g || !Array.isArray(g.dietary) || g.dietary.every(d=>DIET_KEYS.includes(d))) return;
+      const keep=g.dietary.filter(d=>DIET_KEYS.includes(d));
+      const n=_normaliseDiet(g.dietary.filter(d=>!DIET_KEYS.includes(d)));
+      g.dietary=[...new Set(keep.concat(n.dietary))].sort((a,b)=>DIET_KEYS.indexOf(a)-DIET_KEYS.indexOf(b));
+      if(n.allergens.length) g.allergens=[...new Set((g.allergens||[]).concat(n.allergens))];
+      if(n.allergyNote) g.allergyNote=[g.allergyNote,n.allergyNote].filter(Boolean).join(', ');
+      if(n.dietOther) g.dietOther=[g.dietOther,n.dietOther].filter(Boolean).join(', ');
+    });
     if(saved.checklist)  STATE.checklist = saved.checklist;
     if(saved.vendors)    STATE.vendors = saved.vendors;
     if(!Array.isArray(STATE.vendors)) STATE.vendors = [];
@@ -41176,6 +41741,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'){
   if(fv&&!fv.classList.contains('hidden')){ closeFileViewDirect(); return; }
   const modalOpen=!document.getElementById('modal-overlay').classList.contains('hidden');
   if(!modalOpen){ closeModalDirect(); return; }
+  if(_lkSheetCtx){ _lkAskKeep(); return; }
   // Budget paid/booked batch confirm open → revert that toggle (mirrors Cancel).
   if(_batchRevertCtx || _batchDateCtx){ _batchCancel(); return; }
   // Any other armed confirm (task tick, deposit-paid, etc.) → run its revert closure.
