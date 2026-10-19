@@ -33935,7 +33935,7 @@ function _wwRowHtml(x){
   const addrLine = addr
     ? `<span style=”display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--muted);margin-top:3px”><svg width=”9” height=”9” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round” style=”flex-shrink:0”><path d=”M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z”/><circle cx=”12” cy=”10” r=”3”/></svg>${_wwEsc(addr)}</span>`
     : `<span style=”display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--gold-deep);margin-top:3px;cursor:pointer;background:none;border:none;padding:0;font-family:inherit” onclick=”closeDots();openWwContribution('${x.id}')”><svg width=”9” height=”9” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z”/><circle cx=”12” cy=”10” r=”3”/></svg>Add address</span>`;
-  return `<div style=”display:flex;align-items:center;gap:12px;background:var(--card,var(--cream));border:1px solid var(--border);border-radius:11px;padding:11px 13px;position:relative”>
+  return `<div style=”display:flex;align-items:center;gap:12px;background:var(--card,var(--cream));border:1px solid var(--border);border-radius:11px;padding:11px 13px”>
       <span style=”width:32px;height:32px;border-radius:50%;background:var(--surface);color:var(--gold-deep);display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-weight:500;align-self:flex-start;margin-top:1px”>${_wwEsc(_wwInitials(x.name))}</span>
       <span style=”flex:1;min-width:0;overflow:hidden”>
         <span style=”display:block;font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis”>${_wwEsc(x.name||'Anonymous')}</span>
@@ -33946,11 +33946,11 @@ function _wwRowHtml(x){
         <span style=”font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink)”>${fmt(Number(x.amount)||0)}</span>
         ${thankBtn}
         <button class=”dots-btn” onclick=”toggleDots(event,'wwdots-${x.id}')”>···</button>
+        <div class=”dots-dropdown hidden” id=”wwdots-${x.id}” style=”position:fixed”>
+          <button onclick=”closeDots();openWwContribution('${x.id}')”><svg width=”13” height=”13” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7”/><path d=”M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z”/></svg> Edit</button>
+          <button class=”danger” onclick=”closeDots();deleteWwContribution('${x.id}')”><svg width=”13” height=”13” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><polyline points=”3 6 5 6 21 6”/><path d=”M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6”/></svg> Delete</button>
+        </div>
       </span>
-      <div class=”dots-dropdown hidden” id=”wwdots-${x.id}”>
-        <button onclick=”closeDots();openWwContribution('${x.id}')”><svg width=”13” height=”13” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><path d=”M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7”/><path d=”M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z”/></svg> Edit</button>
-        <button class=”danger” onclick=”closeDots();deleteWwContribution('${x.id}')”><svg width=”13” height=”13” viewBox=”0 0 24 24” fill=”none” stroke=”currentColor” stroke-width=”2” stroke-linecap=”round” stroke-linejoin=”round”><polyline points=”3 6 5 6 21 6”/><path d=”M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6”/></svg> Delete</button>
-      </div>
     </div>`;
 }
 
