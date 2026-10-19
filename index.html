@@ -26556,6 +26556,31 @@ function _guestNameList(){
     }
   });
 
+  // Named +1 pairs — "Host Name & +1 Name" (host→plusOneId link, one-directional)
+  (STATE.guests||[]).forEach(g=>{
+    if(!g||!g.plusOneId) return;
+    const plus=(STATE.guests||[]).find(x=>x.id===g.plusOneId);
+    if(!plus) return;
+    const n1=(g.name||'').trim(), n2=(plus.name||'').trim();
+    if(!n1||!n2) return; // only add pair if +1 has a name
+    const w1=n1.split(/\s+/), w2=n2.split(/\s+/);
+    const minLen=Math.min(w1.length,w2.length);
+    let suffixLen=0;
+    for(let s=1;s<minLen;s++){
+      if(w1.slice(-s).join(' ').toLowerCase()===w2.slice(-s).join(' ').toLowerCase()) suffixLen=s;
+    }
+    let pairName;
+    if(suffixLen>0){
+      const f1=w1.slice(0,-suffixLen).join(' ');
+      const f2=w2.slice(0,-suffixLen).join(' ');
+      const sur=w1.slice(-suffixLen).join(' ');
+      pairName=f1+' & '+f2+' '+sur;
+    } else {
+      pairName=n1+' & '+n2;
+    }
+    names.add(pairName.trim());
+  });
+
   // Families / households
   (STATE.families||[]).forEach(f=>{
     const n=(f.name||'').trim();
