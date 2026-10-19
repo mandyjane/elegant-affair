@@ -41225,22 +41225,21 @@ async function cloudSignOut(){
 
 function _cloudAccountHtml(){
   const user=_sbSession?_sbSession.user:null;
-  if(!user) return '<p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.5">Create an account or sign in to save your planner to the cloud and access it from any device.</p>'
-    +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
-    +'<button class="btn btn-primary btn-sm" onclick="openAuthModal(\'in\')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Sign in</button>'
-    +'<button class="btn btn-outline btn-sm" onclick="openAuthModal(\'up\')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Create account</button></div>';
+  if(!user) return `<p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.5">Create an account or sign in to save your planner to the cloud and access it from any device.</p>`
+    +`<div style="display:flex;gap:10px;flex-wrap:wrap">`
+    +`<button class="btn btn-primary btn-sm" onclick="openAuthModal('in')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Sign in</button>`
+    +`<button class="btn btn-outline btn-sm" onclick="openAuthModal('up')" style="display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Create account</button></div>`;
 
-  return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:.5px solid var(--border);border-radius:10px">'
-    +'<div style="width:36px;height:36px;border-radius:50%;background:var(--parchment);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep,#7d5c1b)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>'
-    +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+user.email+'</div><div style="font-size:11px;color:var(--muted)">Signed in</div></div>'
-    +'<button class="btn btn-ghost btn-sm" onclick="cloudSignOut()" style="color:var(--muted);font-size:12px;white-space:nowrap">Sign out</button></div>'
-    +'<p style="font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.5">Save your planner to the cloud, then load it on any device. Photos sync separately (coming soon).</p>'
-    +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
-    +'<button class="btn btn-primary btn-sm" id="cloud-save-btn" onclick="cloudSaveClick()" style="display:inline-flex;align-items:center;gap:5px">'+_csvBtnHtml()+'</button>'
-    +'<button class="btn btn-outline btn-sm" id="cloud-load-btn" onclick="cloudLoadClick()" style="display:inline-flex;align-items:center;gap:5px">'+_cldBtnHtml()+'</button></div>'
-    +'<p style="font-size:11px;color:var(--muted);margin:10px 0 0;line-height:1.4"><b>Save to cloud</b> — uploads your current planner.<br><b>Load from cloud</b> — replaces this device's data with the cloud version.</p>';
+  return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:.5px solid var(--border);border-radius:10px">`
+    +`<div style="width:36px;height:36px;border-radius:50%;background:var(--parchment);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep,#7d5c1b)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`
+    +`<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${user.email}</div><div style="font-size:11px;color:var(--muted)">Signed in</div></div>`
+    +`<button class="btn btn-ghost btn-sm" onclick="cloudSignOut()" style="color:var(--muted);font-size:12px;white-space:nowrap">Sign out</button></div>`
+    +`<p style="font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.5">Save your planner to the cloud, then load it on any device. Photos sync separately (coming soon).</p>`
+    +`<div style="display:flex;gap:10px;flex-wrap:wrap">`
+    +`<button class="btn btn-primary btn-sm" id="cloud-save-btn" onclick="cloudSaveClick()" style="display:inline-flex;align-items:center;gap:5px">${_csvBtnHtml()}</button>`
+    +`<button class="btn btn-outline btn-sm" id="cloud-load-btn" onclick="cloudLoadClick()" style="display:inline-flex;align-items:center;gap:5px">${_cldBtnHtml()}</button></div>`
+    +`<p style="font-size:11px;color:var(--muted);margin:10px 0 0;line-height:1.4"><b>Save to cloud</b> — uploads your current planner.<br><b>Load from cloud</b> — replaces this device&#39;s data with the cloud version.</p>`;
 }
-
 // PERSISTENCE (localStorage)
 // ══════════════════════════════════════════════
 const STORAGE_KEY = 'eternal_wedding_v2';
