@@ -957,13 +957,13 @@ body.dark .nav-seat-count{background:var(--gold);color:#1B1A1E}
      in the Arrange-sections popup entirely. Matches the sidebar drawer breakpoint (900px). */
   .rsvp-cards-per-row-block{display:none !important}
 }
-/* RSVP tracker: desktop (fine-pointer) click-drag side-scroll + thin gold scrollbar. */
+/* RSVP tracker: desktop (fine-pointer) click-drag side-scroll + visible gold scrollbar. */
 @media (pointer:fine){
-  #rsvp-scroll{scrollbar-width:thin;scrollbar-color:var(--gold) transparent}
-  #rsvp-scroll::-webkit-scrollbar{height:10px}
-  #rsvp-scroll::-webkit-scrollbar-track{background:transparent}
-  #rsvp-scroll::-webkit-scrollbar-thumb{background:var(--gold);border-radius:6px;border:2px solid var(--cream)}
-  #rsvp-scroll::-webkit-scrollbar-thumb:hover{background:var(--gold-deep)}
+  #rsvp-scroll{scrollbar-width:auto;scrollbar-color:var(--gold) rgba(0,0,0,.07)}
+  #rsvp-scroll::-webkit-scrollbar{height:12px}
+  #rsvp-scroll::-webkit-scrollbar-track{background:rgba(0,0,0,.06);border-radius:6px;margin:0 4px}
+  #rsvp-scroll::-webkit-scrollbar-thumb{background:var(--gold);border-radius:6px;border:2px solid transparent;background-clip:padding-box}
+  #rsvp-scroll::-webkit-scrollbar-thumb:hover{background:var(--gold-deep);background-clip:padding-box;border:2px solid transparent}
   #rsvp-scroll.rsvp-grabbable{cursor:grab}
   #rsvp-scroll.rsvp-grabbing{cursor:grabbing;user-select:none}
 }
@@ -2014,11 +2014,11 @@ body.dark .gt-mp-av{background:rgba(196,168,130,.16);color:var(--gold)}
   .content{padding:10px 16px 20px;overflow-x:hidden}
   /* Bulk guest table: visible horizontal scrollbar + grab-to-pan, desktop (fine pointer) only. */
   @media (pointer:fine){
-    .gt-scroll{scrollbar-width:thin;scrollbar-color:var(--gold) transparent}
-    .gt-scroll::-webkit-scrollbar{height:10px}
-    .gt-scroll::-webkit-scrollbar-track{background:transparent}
-    .gt-scroll::-webkit-scrollbar-thumb{background:var(--gold);border-radius:6px;border:2px solid var(--cream)}
-    .gt-scroll::-webkit-scrollbar-thumb:hover{background:var(--gold-deep)}
+    .gt-scroll{scrollbar-width:auto;scrollbar-color:var(--gold) rgba(0,0,0,.07)}
+    .gt-scroll::-webkit-scrollbar{height:12px}
+    .gt-scroll::-webkit-scrollbar-track{background:rgba(0,0,0,.06);border-radius:6px;margin:0 4px}
+    .gt-scroll::-webkit-scrollbar-thumb{background:var(--gold);border-radius:6px;border:2px solid transparent;background-clip:padding-box}
+    .gt-scroll::-webkit-scrollbar-thumb:hover{background:var(--gold-deep);background-clip:padding-box;border:2px solid transparent}
     .gt-scroll.gt-pannable{cursor:grab}
     .gt-scroll.gt-grabbing{cursor:grabbing;user-select:none}
   }
